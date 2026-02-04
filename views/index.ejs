@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>100 Days of DSA Challenge</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>100 Days DSA Challenge 🚀</h1>
+            <p class="subtitle">Master Data Structures & Algorithms</p>
+            <div class="timer-box">
+                <div class="timer-label">Next Day Unlocks In</div>
+                <div class="timer-display" id="timerDisplay">--:--:--</div>
+            </div>
+        </header>
+
+        <!-- Instructions Banner -->
+        <div class="instructions-banner">
+            <div class="instructions-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                    stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+            </div>
+            <div class="instructions-content">
+                <div class="instructions-title">📚 How to Use This Challenge</div>
+                <div class="instructions-text">👉 ℹ️ Watch this quick video tutorial to learn how to make the most of your 100-day journey!</div>
+                <div class="instructions-text">👉 ℹ️ For Optimal Solution Of Platform Specific Problems, Watch Tutorial Video Attached!</div>
+                <a href="https://gusindia01-my.sharepoint.com/:v:/g/personal/soumik_maity_ddn_upes_ac_in/IQA3sgQjD8OEQadE9NCjyQOmAXfmFDELfPr4F4-tyZu6vEg?e=NVDxWL"
+                    target="_blank" rel="noopener noreferrer" class="watch-video-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Watch Instructions
+                </a>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="totalDays">0</div>
+                <div class="stat-label">Unlocked</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="completedDays">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="streakDays">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="searchBox" placeholder="Search by day, question, or topic..." oninput="searchDays()">
+            <button class="filter-btn active" onclick="setFilter('all')">All</button>
+            <button class="filter-btn" onclick="setFilter('Unit I: Introduction')">Introduction</button>
+            <button class="filter-btn" onclick="setFilter('Unit II: Linked List')">Linked List</button>
+            <button class="filter-btn" onclick="setFilter('Unit III: Stack & Queue')">Stack/Queue</button>
+            <button class="filter-btn" onclick="setFilter('Unit IV: Tree')">Trees</button>
+            <button class="filter-btn" onclick="setFilter('Unit V: Hash Table & Graph')">Hash/Graph</button>
+            <button class="filter-btn" onclick="setFilter('Unit VI: Sorting & Searching')">Sort/Search</button>
+        </div>
+
+        <div class="days-grid" id="daysGrid"></div>
+    </div>
+
+    <!-- Progress Box -->
+    <div class="progress-box">
+        <div class="progress-label">Your Progress</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">
+            <span id="progressCompletedDays">0</span> / <span id="progressTotalDays">100</span> Days
+        </div>
+    </div>
+
+    <!-- Problem Description Modal -->
+    <div id="problemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="close-btn" onclick="closeModal()">Close</button>
+            </div>
+            <div id="modalDescription"></div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Solution Modal -->
+    <div id="solutionModal" class="fullscreen-modal">
+        <div class="fullscreen-modal-content">
+            <div class="fullscreen-modal-header">
+                <h2 id="solutionModalTitle"></h2>
+                <button class="close-btn" onclick="closeSolutionModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Close
+                </button>
+            </div>
+            <div id="solutionModalContent" class="fullscreen-modal-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
