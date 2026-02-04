@@ -1577,6 +1577,26 @@ h1 {
   font-weight: 700;
 }
 
+
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  padding: 10px 20px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid #ef4444;
+  border-radius: 10px;
+  color: #ef4444;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+
 @media (max-width: 768px) {
   .fullscreen-solution-content .tutorial-block h3 {
     font-size: 1.2rem;

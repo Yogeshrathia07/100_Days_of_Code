@@ -1,23 +1,48 @@
-const express=require('express');
-const app=express();
+const express = require("express");
+const app = express();
+const path = require("path");
+require("dotenv").config();
 
-require('dotenv').config();
-connectDB=require('./config/db');
+const connectDB = require("./config/db");
 connectDB();
-app.set('view engine','ejs');
-app.set('views','./views');
 
+// View engine setup
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 
-const path=require('path');
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());   
+
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get('/',(req,res)=>{
-    // res.send('Hello World!');
-    res.render('index');
+// ----------------------------------------------------
+
+const authRoutes = require("./routes/auth_routes");
+app.use("/auth", authRoutes);
+
+const isAuthenticated = require("./middleware/auth_middleware");
+app.get("/", isAuthenticated, (req, res) => {
+  res.render("index");
 });
 
-app.listen(3000,()=>{
-    console.log('Server is running on http://localhost:3000');
-})
+
+// ----------------------------------------------------
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+
+
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+});
