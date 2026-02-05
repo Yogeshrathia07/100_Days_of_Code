@@ -41,7 +41,7 @@ app.get("/register", (req, res) => {
 });
 // -------------------------------- LeetCode Router ----------------------------
 const leetcodeRoutes = require("./routes/leetcode_router");
-app.use("/leetcode",isAuthenticated ,leetcodeRoutes);
+app.use("/leetcode" ,leetcodeRoutes);
 
 
 

@@ -13,8 +13,17 @@
 
     <form id="registerForm">
       <input type="text" id="name" placeholder="Enter Name" required>
+
       <input type="email" id="email" placeholder="Enter Email" required>
+
+      <input type="text" id="SAP_ID" placeholder="Enter SAP ID (8 digits)" maxlength="8" required>
+
+      <input type="text" id="leetcode_id" placeholder="Enter LeetCode Username (Optional)">
+
+      <p id="leetcodeStatus" style="font-size: 13px; margin-top: -8px; margin-bottom: 10px;"></p>
+
       <input type="password" id="password" placeholder="Enter Password" required>
+
       <button type="submit">Register</button>
     </form>
 
@@ -29,31 +38,102 @@
     const form = document.getElementById("registerForm");
     const msg = document.getElementById("msg");
 
+    const leetcodeInput = document.getElementById("leetcode_id");
+    const leetcodeStatus = document.getElementById("leetcodeStatus");
+
+    let timeout = null;
+    let isLeetcodeValid = true;
+
+    // ======================= REAL TIME LEETCODE CHECK =======================
+    leetcodeInput.addEventListener("input", () => {
+      clearTimeout(timeout);
+
+      const username = leetcodeInput.value.trim();
+
+      if (username === "") {
+        leetcodeStatus.innerText = "";
+        isLeetcodeValid = true;
+        return;
+      }
+
+      leetcodeStatus.style.color = "yellow";
+      leetcodeStatus.innerText = "Checking LeetCode username...";
+      isLeetcodeValid = false;
+
+      timeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`/leetcode/check/${username}`);
+          const data = await res.json();
+
+          if (data.valid) {
+            isLeetcodeValid = true;
+            leetcodeStatus.style.color = "lightgreen";
+            leetcodeStatus.innerText = "✅ Valid LeetCode username";
+          } else {
+            isLeetcodeValid = false;
+            leetcodeStatus.style.color = "red";
+            leetcodeStatus.innerText = "❌ Invalid LeetCode username";
+          }
+
+        } catch (error) {
+          isLeetcodeValid = false;
+          leetcodeStatus.style.color = "red";
+          leetcodeStatus.innerText = "❌ Error checking username";
+        }
+      }, 800);
+    });
+
+    // ======================= REGISTER FORM SUBMIT =======================
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const SAP_ID = document.getElementById("SAP_ID").value.trim();
+      const leetcode_id = document.getElementById("leetcode_id").value.trim();
       const password = document.getElementById("password").value;
 
-      const res = await fetch("/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        msg.style.color = "lightgreen";
-        msg.innerText = "Registered successfully! Redirecting to Home page...";
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1500);
-      } else {
+      // SAP validation
+      if (!/^\d{8}$/.test(SAP_ID)) {
         msg.style.color = "red";
-        msg.innerText = data.message;
+        msg.innerText = "SAP ID must be exactly 8 digits!";
+        return;
+      }
+
+      // leetcode validation
+      if (leetcode_id !== "" && !isLeetcodeValid) {
+        msg.style.color = "red";
+        msg.innerText = "Please enter a valid LeetCode username!";
+        return;
+      }
+
+      msg.style.color = "yellow";
+      msg.innerText = "Registering...";
+
+      try {
+        const res = await fetch("/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, SAP_ID, leetcode_id, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.style.color = "lightgreen";
+          msg.innerText = "Registered successfully! Redirecting to Home page...";
+
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1500);
+        } else {
+          msg.style.color = "red";
+          msg.innerText = data.message || "Registration failed!";
+        }
+
+      } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = "Server error! Please try again.";
       }
     });
   </script>
