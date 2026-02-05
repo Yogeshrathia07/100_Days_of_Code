@@ -40,12 +40,13 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 // -------------------------------- LeetCode Router ----------------------------
+const leetcodeRoutes = require("./routes/leetcode_router");
+app.use("/leetcode" ,leetcodeRoutes);
 
 
-app.get("/leetcode-dashboard", isAuthenticated, (req, res) => {
-  res.render("leetcode", { leetcode_id: req.user.leetcode_id });
+app.get("/a", isAuthenticated, (req, res) => {
+  res.render("leetcode", { user: req.user });
 });
-
 
 
 app.listen(3000, () => {
