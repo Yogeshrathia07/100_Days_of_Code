@@ -26,9 +26,9 @@ const authRoutes = require("./routes/auth_routes");
 app.use("/auth", authRoutes);
 
 const isAuthenticated = require("./middleware/auth_middleware");
-app.get("/", isAuthenticated, (req, res) => {
-  res.render("index");
-});
+// app.get("/", isAuthenticated, (req, res) => {
+//   res.render("index");
+// });
 
 
 // ----------------------------------------------------
@@ -44,8 +44,8 @@ const leetcodeRoutes = require("./routes/leetcode_router");
 app.use("/leetcode" ,leetcodeRoutes);
 
 
-app.get("/a", isAuthenticated, (req, res) => {
-  res.render("leetcode", { user: req.user });
+app.get("/", isAuthenticated, (req, res) => {
+  res.render("index", { user: req.user });
 });
 
 

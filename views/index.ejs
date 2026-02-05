@@ -1,18 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>100 Days of DSA Challenge</title>
+
+    <!-- DSA CSS -->
     <link rel="stylesheet" href="style.css" />
+
+    <!-- LeetCode CSS -->
+    <link rel="stylesheet" href="leetcode_style.css">
+
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+
     <a href="/auth/logout" class="logout-btn">Logout</a>
 
+    <!-- ===================== LEETCODE DASHBOARD SECTION (TOP) ===================== -->
+    <div class="container">
+        <h1>LeetCode Dashboard</h1>
+        <p id="status">Loading...</p>
+
+        <div class="top-section">
+            <div class="card progress-card">
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+
+                    <div class="chart-center-text">
+                        <div class="number" id="totalSolved">0</div>
+                        <div class="total">/3832</div>
+
+                        <div class="label">
+                            <svg class="check-icon" viewBox="0 0 16 16" fill="#58a6ff">
+                                <path
+                                    d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                            </svg>
+                            Solved
+                        </div>
+                    </div>
+
+                    <div class="attempting-text">17 Attempting</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label easy">Easy</div>
+                        <div class="stat-value" id="easy">0/924</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label medium">Med.</div>
+                        <div class="stat-value" id="medium">0/2002</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label hard">Hard</div>
+                        <div class="stat-value" id="hard">0/906</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card badge-card">
+                <div class="badge-header">
+                    <div class="badge-title">Badges</div>
+                    <div class="badge-count" id="badgeCount">0</div>
+                </div>
+
+                <div class="badge-icons" id="badgeSection">
+                    <div class="badge-icon">
+                        <div class="badge-empty"></div>
+                    </div>
+                </div>
+
+                <div class="recent-badge-section">
+                    <div class="recent-badge-label">Most Recent Badge</div>
+                    <div id="recentBadge">No badges yet</div>
+                </div>
+
+                <div class="next-arrow">→</div>
+            </div>
+        </div>
+
+        <div class="card heatmap-card">
+            <div class="heatmap-header">
+                <div class="heatmap-title" id="submissionText">0 submissions in the past one year</div>
+                <div class="heatmap-stats">
+                    Total active days: <span id="activeDaysText">0</span>
+                    <span style="margin: 0 8px;">|</span>
+                    Max streak: <span id="streakText">0</span>
+                </div>
+            </div>
+
+            <div class="month-labels" id="monthLabels"></div>
+
+            <div class="heatmap-wrapper">
+                <div class="day-labels">
+                    <div>Mon</div>
+                    <div>Wed</div>
+                    <div>Fri</div>
+                </div>
+                <div class="heatmap" id="heatmap"></div>
+            </div>
+
+            <div class="legend">
+                <span>Less</span>
+                <div class="legend-item">
+                    <div class="day"></div>
+                    <div class="day level-1"></div>
+                    <div class="day level-2"></div>
+                    <div class="day level-3"></div>
+                    <div class="day level-4"></div>
+                </div>
+                <span>More</span>
+            </div>
+        </div>
+    </div>
+
+    <hr style="margin:40px 0; border:1px solid #30363d;">
+
+    <!-- ===================== DSA CHALLENGE SECTION (BELOW) ===================== -->
     <div class="container">
         <header>
             <h1>100 Days DSA Challenge 🚀</h1>
             <p class="subtitle">Master Data Structures & Algorithms</p>
+
             <div class="timer-box">
                 <div class="timer-label">Next Day Unlocks In</div>
                 <div class="timer-display" id="timerDisplay">--:--:--</div>
@@ -28,10 +143,14 @@
                     <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                 </svg>
             </div>
+
             <div class="instructions-content">
                 <div class="instructions-title">📚 How to Use This Challenge</div>
-                <div class="instructions-text">👉 ℹ️ Watch this quick video tutorial to learn how to make the most of your 100-day journey!</div>
-                <div class="instructions-text">👉 ℹ️ For Optimal Solution Of Platform Specific Problems, Watch Tutorial Video Attached!</div>
+                <div class="instructions-text">👉 ℹ️ Watch this quick video tutorial to learn how to make the most of your
+                    100-day journey!</div>
+                <div class="instructions-text">👉 ℹ️ For Optimal Solution Of Platform Specific Problems, Watch Tutorial Video
+                    Attached!</div>
+
                 <a href="https://gusindia01-my.sharepoint.com/:v:/g/personal/soumik_maity_ddn_upes_ac_in/IQA3sgQjD8OEQadE9NCjyQOmAXfmFDELfPr4F4-tyZu6vEg?e=NVDxWL"
                     target="_blank" rel="noopener noreferrer" class="watch-video-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -112,6 +231,187 @@
         </div>
     </div>
 
+    <!-- DSA JS -->
     <script src="app.js"></script>
+
+    <!-- ===================== LEETCODE SCRIPT ===================== -->
+    <script>
+        const savedLeetcodeId = "<%= user.leetcode_id %>";
+
+        window.addEventListener("load", () => {
+            if (savedLeetcodeId && savedLeetcodeId !== "null" && savedLeetcodeId !== "undefined") {
+                fetchLeetcodeData(savedLeetcodeId);
+            } else {
+                document.getElementById("status").innerText = "No LeetCode ID found in your profile!";
+            }
+        });
+
+        async function fetchLeetcodeData(username) {
+            const status = document.getElementById("status");
+
+            try {
+                status.innerText = "Loading profile...";
+
+                const res = await fetch(`/leetcode/${username}`);
+                const data = await res.json();
+
+                if (data.error) {
+                    status.innerText = "User not found!";
+                    return;
+                }
+
+                status.innerText = `Profile Loaded: ${username}`;
+
+                showStats(data.submitStats);
+                showBadges(data.badges);
+                generateHeatmap(data.calendar);
+
+            } catch (err) {
+                status.innerText = "Backend not running!";
+                console.log(err);
+            }
+        }
+
+        let currentChart = null;
+
+        function showStats(stats) {
+            const easy = stats.acSubmissionNum.find(s => s.difficulty === "Easy");
+            const med = stats.acSubmissionNum.find(s => s.difficulty === "Medium");
+            const hard = stats.acSubmissionNum.find(s => s.difficulty === "Hard");
+
+            document.getElementById("easy").innerText = `${easy.count}/924`;
+            document.getElementById("medium").innerText = `${med.count}/2002`;
+            document.getElementById("hard").innerText = `${hard.count}/906`;
+
+            const total = easy.count + med.count + hard.count;
+            document.getElementById("totalSolved").innerText = total;
+
+            if (currentChart) currentChart.destroy();
+
+            const ctx = document.getElementById("progressChart");
+            currentChart = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: ["Easy", "Medium", "Hard"],
+                    datasets: [{
+                        data: [easy.count, med.count, hard.count],
+                        backgroundColor: ["#2ea043", "#d29922", "#f85149"],
+                        borderWidth: 0,
+                        cutout: '75%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+
+        function showBadges(badges) {
+            const div = document.getElementById("badgeSection");
+            const badgeCount = document.getElementById("badgeCount");
+
+            div.innerHTML = "";
+            badgeCount.innerText = badges.length;
+
+            if (badges.length === 0) {
+                div.innerHTML = `
+                    <div class="badge-icon">
+                        <div class="badge-empty"></div>
+                    </div>
+                `;
+                document.getElementById("recentBadge").innerText = "No badges yet";
+                return;
+            }
+
+            badges.slice(0, 3).forEach(badge => {
+                const badgeIcon = document.createElement("div");
+                badgeIcon.className = "badge-icon";
+
+                if (badge.icon) {
+                    badgeIcon.innerHTML = `<img src="${badge.icon}" alt="${badge.displayName}" title="${badge.displayName}">`;
+                } else {
+                    badgeIcon.innerHTML = `<div class="badge-empty"></div>`;
+                }
+
+                div.appendChild(badgeIcon);
+            });
+
+            document.getElementById("recentBadge").innerText = badges[0].displayName;
+        }
+
+        function getLevel(c) {
+            if (c === 0) return 0;
+            if (c <= 2) return 1;
+            if (c <= 5) return 2;
+            if (c <= 10) return 3;
+            return 4;
+        }
+
+        function generateHeatmap(calendar) {
+            const heatmap = document.getElementById("heatmap");
+            const monthLabels = document.getElementById("monthLabels");
+
+            heatmap.innerHTML = "";
+            monthLabels.innerHTML = "";
+
+            const data = calendar.submissionCalendar;
+
+            document.getElementById("activeDaysText").innerText = calendar.totalActiveDays;
+            document.getElementById("streakText").innerText = calendar.streak;
+
+            const total = Object.values(data).reduce((a, b) => a + b, 0);
+            document.getElementById("submissionText").innerText = `${total} submissions in the past one year`;
+
+            let now = new Date();
+            let endUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            let startUTC = new Date(endUTC);
+            startUTC.setUTCDate(endUTC.getUTCDate() - 364);
+
+            let alignedStart = new Date(startUTC);
+            alignedStart.setUTCDate(startUTC.getUTCDate() - startUTC.getUTCDay());
+
+            let months = {};
+            const totalDays = 371;
+
+            for (let i = 0; i < totalDays; i++) {
+                let date = new Date(alignedStart);
+                date.setUTCDate(alignedStart.getUTCDate() + i);
+
+                let timestamp = Math.floor(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) / 1000);
+                let count = data[timestamp] || 0;
+
+                let div = document.createElement("div");
+                div.className = "day";
+
+                let level = getLevel(count);
+                if (level) div.classList.add("level-" + level);
+
+                div.title = `${date.toDateString()} : ${count}`;
+                heatmap.appendChild(div);
+
+                let month = date.toLocaleString("default", { month: "short" });
+                let week = Math.floor(i / 7);
+
+                if (!months[month]) {
+                    months[month] = week;
+                }
+            }
+
+            for (let [month, pos] of Object.entries(months)) {
+                let m = document.createElement("div");
+                m.className = "month";
+                m.innerText = month;
+                m.style.gridColumnStart = pos + 1;
+                monthLabels.appendChild(m);
+            }
+        }
+    </script>
+
 </body>
+
 </html>
