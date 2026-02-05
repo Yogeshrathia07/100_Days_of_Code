@@ -499,6 +499,17 @@
   </div>
 
   <script>
+    const savedLeetcodeId = "<%= leetcode_id %>";
+        window.onload = () => {
+    if (savedLeetcodeId && savedLeetcodeId !== "null") {
+        document.getElementById("username").value = savedLeetcodeId;
+        fetchUserData(); // auto fetch
+    } else {
+        document.getElementById("status").innerText = "No LeetCode ID found in your profile!";
+    }
+    };
+
+
     let currentChart = null; // Store chart instance globally
 
     async function fetchUserData() {
@@ -513,7 +524,9 @@
       status.innerText = "Loading...";
 
       try {
-        const res = await fetch(`http://localhost:3000/leetcode/${username}`);
+        // const res = await fetch(`http://localhost:3000/leetcode/${username}`);
+        const res = await fetch(`/leetcode/${username}`);
+
         const data = await res.json();
 
         if (data.error) {
