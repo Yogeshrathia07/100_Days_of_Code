@@ -1,493 +1,485 @@
-// Configuration - Modify start date here!
+// ====================== CONFIG ======================
 const CONFIG = {
-    startDate: '2025-02-01',
-    unlockTime: '07:00',
-    timezone: 'Asia/Kolkata'
+  startDate: "2025-02-01",
+  unlockTime: "07:00",
 };
 
+// ====================== GLOBALS ======================
 let challengeData = [];
-let currentFilter = 'all';
+let currentFilter = "all";
 let completedDays = [];
 let unlockedDays = 0;
 
-// Calculate unlocked day
-function getUnlockedDay() {
-    const now = new Date();
-    const start = new Date(CONFIG.startDate + 'T' + CONFIG.unlockTime + ':00+05:30');
-
-    if (now < start) {
-        return 0;
-    }
-
-    const diffTime = now - start;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    const todayUnlock = new Date();
-    const [hours, minutes] = CONFIG.unlockTime.split(':');
-    todayUnlock.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-    if (now >= todayUnlock) {
-        return Math.min(diffDays + 1, 100);
-    }
-
-    return Math.min(Math.max(0, diffDays), 100);
-}
-
-// Timer
-function updateTimer() {
-    const now = new Date();
-    const [hours, minutes] = CONFIG.unlockTime.split(':');
-
-    const nextUnlock = new Date();
-    nextUnlock.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-    if (now >= nextUnlock) {
-        nextUnlock.setDate(nextUnlock.getDate() + 1);
-    }
-
-    const diff = nextUnlock - now;
-
-    if (diff > 0) {
-        const h = Math.floor(diff / (1000 * 60 * 60));
-        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-        const timeString = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        document.getElementById('timerDisplay').textContent = timeString;
-
-        const countdownEl = document.getElementById('nextUnlockCountdown');
-        if (countdownEl) countdownEl.textContent = timeString;
-    } else {
-        document.getElementById('timerDisplay').textContent = '00:00:00';
-        const countdownEl = document.getElementById('nextUnlockCountdown');
-        if (countdownEl) countdownEl.textContent = '00:00:00';
-    }
-}
-
-// Streak
-function calculateStreak() {
-    if (completedDays.length === 0) return 0;
-
-    const sortedCompleted = [...completedDays].sort((a, b) => b - a);
-    let highestCompleted = sortedCompleted[0];
-    let streak = 0;
-
-    for (let day = highestCompleted; day >= 1; day--) {
-        if (completedDays.includes(day)) streak++;
-        else break;
-    }
-
-    return streak;
-}
-
-// Load progress
+// ====================== COMMON FUNCTIONS ======================
 function loadProgress() {
-    const saved = localStorage.getItem('dsa-100-days-progress');
-    if (saved) {
-        try {
-            completedDays = JSON.parse(saved);
-        } catch (e) {
-            completedDays = [];
-        }
+  const saved = localStorage.getItem("dsa-100-days-progress");
+  if (saved) {
+    try {
+      completedDays = JSON.parse(saved);
+    } catch (e) {
+      completedDays = [];
     }
+  }
 }
 
-// Save progress
 function saveProgress() {
-    localStorage.setItem('dsa-100-days-progress', JSON.stringify(completedDays));
+  localStorage.setItem("dsa-100-days-progress", JSON.stringify(completedDays));
 }
 
-// Toggle complete
-function toggleComplete(day) {
-    if (completedDays.includes(day)) {
-        completedDays = completedDays.filter(d => d !== day);
-    } else {
-        completedDays.push(day);
-    }
-    saveProgress();
-    updateStats();
-    renderDays();
+function getUnlockedDay() {
+  const now = new Date();
+  const start = new Date(CONFIG.startDate + "T" + CONFIG.unlockTime + ":00");
+
+  if (now < start) return 0;
+
+  const diffTime = now - start;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const todayUnlock = new Date();
+  const [hours, minutes] = CONFIG.unlockTime.split(":");
+  todayUnlock.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+  if (now >= todayUnlock) return Math.min(diffDays + 1, 100);
+
+  return Math.min(Math.max(0, diffDays), 100);
 }
 
-// Update stats
+function calculateStreak() {
+  if (completedDays.length === 0) return 0;
+
+  const sortedCompleted = [...completedDays].sort((a, b) => b - a);
+  let highestCompleted = sortedCompleted[0];
+  let streak = 0;
+
+  for (let day = highestCompleted; day >= 1; day--) {
+    if (completedDays.includes(day)) streak++;
+    else break;
+  }
+
+  return streak;
+}
+
+// ====================== TIMER ======================
+function updateTimer() {
+  const timerEl = document.getElementById("timerDisplay");
+  if (!timerEl) return;
+
+  const now = new Date();
+  const [hours, minutes] = CONFIG.unlockTime.split(":");
+
+  const nextUnlock = new Date();
+  nextUnlock.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+  if (now >= nextUnlock) nextUnlock.setDate(nextUnlock.getDate() + 1);
+
+  const diff = nextUnlock - now;
+
+  if (diff > 0) {
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+    timerEl.textContent = `${String(h).padStart(2, "0")}:${String(m).padStart(
+      2,
+      "0",
+    )}:${String(s).padStart(2, "0")}`;
+  } else {
+    timerEl.textContent = "00:00:00";
+  }
+}
+
+// ====================== STATS ======================
 function updateStats() {
-    const maxUnlocked = getUnlockedDay();
-    const completed = completedDays.length;
-    const streak = calculateStreak();
+  const unlocked = getUnlockedDay();
+  const completed = completedDays.length;
+  const streak = calculateStreak();
 
-    document.getElementById('totalDays').textContent = maxUnlocked;
-    document.getElementById('completedDays').textContent = completed;
-    document.getElementById('streakDays').textContent = streak;
+  const totalDaysEl = document.getElementById("totalDays");
+  const completedDaysEl = document.getElementById("completedDays");
+  const streakDaysEl = document.getElementById("streakDays");
 
-    document.getElementById('progressCompletedDays').textContent = completed;
-    document.getElementById('progressTotalDays').textContent = maxUnlocked;
+  if (totalDaysEl) totalDaysEl.textContent = unlocked;
+  if (completedDaysEl) completedDaysEl.textContent = completed;
+  if (streakDaysEl) streakDaysEl.textContent = streak;
 
-    const progressPercent = maxUnlocked > 0 ? (completed / maxUnlocked) * 100 : 0;
-    document.getElementById('progressFill').style.width = progressPercent + '%';
+  const progressCompletedDaysEl = document.getElementById(
+    "progressCompletedDays",
+  );
+  const progressTotalDaysEl = document.getElementById("progressTotalDays");
+  const progressFillEl = document.getElementById("progressFill");
+
+  if (progressCompletedDaysEl)
+    progressCompletedDaysEl.textContent = completed;
+
+  if (progressTotalDaysEl) progressTotalDaysEl.textContent = unlocked;
+
+  if (progressFillEl) {
+    const progressPercent = unlocked > 0 ? (completed / unlocked) * 100 : 0;
+    progressFillEl.style.width = progressPercent + "%";
+  }
 }
 
-// Filter
+// ====================== CHALLENGE PAGE FUNCTIONS ======================
+function toggleComplete(day) {
+  if (completedDays.includes(day)) {
+    completedDays = completedDays.filter((d) => d !== day);
+  } else {
+    completedDays.push(day);
+  }
+
+  saveProgress();
+  updateStats();
+  renderDays();
+}
+
 function setFilter(filter) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[onclick="setFilter('${filter}')"]`).classList.add('active');
-    renderDays();
+  currentFilter = filter;
+
+  document
+    .querySelectorAll(".filter-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+
+  const activeBtn = document.querySelector(
+    `[onclick="setFilter('${filter}')"]`,
+  );
+  if (activeBtn) activeBtn.classList.add("active");
+
+  renderDays();
 }
 
-// Search
 function searchDays() {
-    renderDays();
+  renderDays();
 }
 
-// Show description modal
 function showDescription(day, questionNum) {
-    const dayData = challengeData.find(d => d.day === day);
-    if (!dayData) return;
+  const dayData = challengeData.find((d) => d.day === day);
+  if (!dayData) return;
 
-    const modal = document.getElementById('problemModal');
-    const title = document.getElementById('modalTitle');
-    const description = document.getElementById('modalDescription');
+  const modal = document.getElementById("problemModal");
+  const title = document.getElementById("modalTitle");
+  const description = document.getElementById("modalDescription");
 
-    title.textContent = `Day ${day} - Question ${questionNum}: ${dayData.question1.title}`;
-    description.innerHTML = `<pre>${dayData.question1.description}</pre>`;
+  if (!modal || !title || !description) return;
 
-    modal.style.display = 'block';
+  title.textContent = `Day ${day} - Question ${questionNum}: ${dayData.question1.title}`;
+  description.innerHTML = `<pre>${dayData.question1.description}</pre>`;
+
+  modal.style.display = "block";
 }
 
 function closeModal() {
-    document.getElementById('problemModal').style.display = 'none';
-}
-
-window.onclick = function(event) {
-    const modal = document.getElementById('problemModal');
-    const solutionModal = document.getElementById('solutionModal');
-    if (event.target === modal) closeModal();
-    if (event.target === solutionModal) closeSolutionModal();
-};
-
-// Fullscreen solution modal
-function showSolutionFullscreen(dayNum, questionNum, solutionType) {
-    const day = challengeData.find(d => d.day === dayNum);
-    if (!day || !day.solutions) return;
-
-    const solutions = questionNum === 1 ? day.solutions.question1 : day.solutions.question2;
-    if (!solutions) return;
-
-    const solution = solutions.find(sol => sol.type === solutionType);
-    if (!solution) return;
-
-    const modal = document.getElementById('solutionModal');
-    const title = document.getElementById('solutionModalTitle');
-    const content = document.getElementById('solutionModalContent');
-
-    title.textContent = `Day ${dayNum} - Question ${questionNum} - Tutorial`;
-
-    content.innerHTML = `
-        <div class="fullscreen-solution-content">
-            ${solution.explanation ? `
-                <div class="tutorial-block">
-                    <h3>💡 Logic Explanation</h3>
-                    <div class="tutorial-text">${solution.explanation.replace(/\n/g, '<br>')}</div>
-                </div>
-            ` : ''}
-
-            ${solution.code ? `
-                <div class="tutorial-block">
-                    <h3>💻 Code Solution</h3>
-                    <pre class="code-block fullscreen-code"><code>${solution.code}</code></pre>
-                </div>
-            ` : ''}
-
-            ${solution.timeComplexity ? `
-                <div class="tutorial-block">
-                    <h3>⏱️ Complexity Analysis</h3>
-                    <div class="complexity-info">
-                        <div class="complexity-item">
-                            <strong>Time Complexity:</strong> <code>${solution.timeComplexity}</code>
-                        </div>
-                        ${solution.spaceComplexity ? `
-                            <div class="complexity-item">
-                                <strong>Space Complexity:</strong> <code>${solution.spaceComplexity}</code>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            ` : ''}
-        </div>
-    `;
-
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+  const modal = document.getElementById("problemModal");
+  if (modal) modal.style.display = "none";
 }
 
 function closeSolutionModal() {
-    document.getElementById('solutionModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
+  const modal = document.getElementById("solutionModal");
+  if (modal) modal.style.display = "none";
+  document.body.style.overflow = "auto";
 }
 
-// Solutions dropdown toggle
-function toggleSolutions(dayNum) {
-    const content = document.getElementById(`solutions-content-${dayNum}`);
-    const chevron = document.getElementById(`chevron-${dayNum}`);
-
-    if (content.classList.contains('open')) {
-        content.classList.remove('open');
-        chevron.style.transform = 'rotate(0deg)';
-    } else {
-        content.classList.add('open');
-        chevron.style.transform = 'rotate(180deg)';
-    }
-}
-
-// Tutorial toggle
-function toggleTutorial(dayNum, questionNum) {
-    const content = document.getElementById(`tutorial-${dayNum}-q${questionNum}`);
-    const chevron = document.getElementById(`tutorial-chevron-${dayNum}-q${questionNum}`);
-
-    if (content.classList.contains('open')) {
-        content.classList.remove('open');
-        chevron.style.transform = 'rotate(0deg)';
-    } else {
-        content.classList.add('open');
-        chevron.style.transform = 'rotate(180deg)';
-    }
-}
-
-// Render tutorial
-function renderTutorial(dayNum, questionNum, tutorial) {
-    if (!tutorial) return '';
-
-    return `
-        <div class="tutorial-section">
-            <button class="tutorial-toggle" onclick="toggleTutorial(${dayNum}, ${questionNum})">
-                <div class="tutorial-toggle-content">
-                    <span>📚 View Complete Tutorial</span>
-                </div>
-                <svg id="tutorial-chevron-${dayNum}-q${questionNum}" class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-            </button>
-            <div id="tutorial-${dayNum}-q${questionNum}" class="tutorial-content">
-                <div class="tutorial-inner">
-                    <button class="fullscreen-btn" onclick="showSolutionFullscreen(${dayNum}, ${questionNum}, 'tutorial')">
-                        View Fullscreen
-                    </button>
-
-                    ${tutorial.explanation ? `
-                        <div class="tutorial-block">
-                            <h4>💡 Logic Explanation</h4>
-                            <div class="tutorial-text">${tutorial.explanation.replace(/\n/g, '<br>')}</div>
-                        </div>
-                    ` : ''}
-
-                    ${tutorial.code ? `
-                        <div class="tutorial-block">
-                            <h4>💻 Code Solution</h4>
-                            <pre class="code-block"><code>${tutorial.code}</code></pre>
-                        </div>
-                    ` : ''}
-
-                    ${tutorial.timeComplexity ? `
-                        <div class="tutorial-block">
-                            <h4>⏱️ Complexity Analysis</h4>
-                            <div class="complexity-info">
-                                <div class="complexity-item">
-                                    <strong>Time Complexity:</strong> <code>${tutorial.timeComplexity}</code>
-                                </div>
-                                ${tutorial.spaceComplexity ? `
-                                    <div class="complexity-item">
-                                        <strong>Space Complexity:</strong> <code>${tutorial.spaceComplexity}</code>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// Render solutions section
-function renderSolutions(dayNum, maxUnlocked) {
-    const day = challengeData.find(d => d.day === dayNum);
-    if (!day || !day.solutions) return '';
-
-    const solutionsUnlocked = dayNum < maxUnlocked;
-
-    if (solutionsUnlocked) {
-        const q1Solutions = day.solutions.question1 || [];
-        const q1Tutorial = q1Solutions.find(sol => sol.type === 'tutorial');
-        const q1VideoSolutions = q1Solutions.filter(sol => sol.type === 'video');
-
-        const q2Solutions = day.solutions.question2 || [];
-        const q2Tutorial = q2Solutions.find(sol => sol.type === 'tutorial');
-        const q2VideoSolutions = q2Solutions.filter(sol => sol.type === 'video');
-
-        const hasAnySolutions = q1Solutions.length > 0 || q2Solutions.length > 0;
-
-        return `
-            <div class="solutions-dropdown">
-                <button class="solutions-toggle" onclick="toggleSolutions(${dayNum})">
-                    <div class="solutions-toggle-content">
-                        <span>✓ Solutions Available</span>
-                    </div>
-                    <svg id="chevron-${dayNum}" class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </button>
-
-                <div id="solutions-content-${dayNum}" class="solutions-content">
-                    <div class="solutions-inner">
-                        ${q1Solutions.length > 0 ? `
-                            <div class="solution-group">
-                                <div class="solution-label">📘 Question 1 Solutions</div>
-                                ${q1Tutorial ? renderTutorial(dayNum, 1, q1Tutorial) : ''}
-                                ${q1VideoSolutions.length > 0 ? `
-                                    <div class="solution-links">
-                                        ${q1VideoSolutions.map(sol => `
-                                            <a href="${sol.link}" target="_blank" class="solution-link">
-                                                ${sol.label}
-                                            </a>
-                                        `).join('')}
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : ''}
-
-                        ${q2Solutions.length > 0 ? `
-                            <div class="solution-group">
-                                <div class="solution-label">🎯 Question 2 Solutions</div>
-                                ${q2VideoSolutions.length > 0 ? `
-                                    <div class="solution-links">
-                                        ${q2VideoSolutions.map(sol => `
-                                            <a href="${sol.link}" target="_blank" class="solution-link">
-                                                ${sol.label}
-                                            </a>
-                                        `).join('')}
-                                    </div>
-                                ` : ''}
-                                ${q2Tutorial ? renderTutorial(dayNum, 2, q2Tutorial) : ''}
-                            </div>
-                        ` : ''}
-
-                        ${!hasAnySolutions ? `<div class="empty-message">Solutions will be added soon...</div>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    } else {
-        return `
-            <div class="solutions-dropdown">
-                <button class="solutions-toggle locked" disabled>
-                    <div class="solutions-toggle-content">
-                        <span>🔒 Solutions unlock when Day ${dayNum + 1} opens</span>
-                    </div>
-                </button>
-            </div>
-        `;
-    }
-}
-
-// Render all days
 function renderDays() {
-    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-    const grid = document.getElementById('daysGrid');
-    const maxUnlocked = getUnlockedDay();
+  const grid = document.getElementById("daysGrid");
+  const searchBox = document.getElementById("searchBox");
 
-    const filtered = challengeData.filter(day => {
-        const matchesFilter = currentFilter === 'all' || day.unit === currentFilter;
-        const matchesSearch = searchTerm === '' ||
-            day.day.toString().includes(searchTerm) ||
-            day.question1.title.toLowerCase().includes(searchTerm) ||
-            day.question2.name.toLowerCase().includes(searchTerm) ||
-            day.topics.some(t => t.toLowerCase().includes(searchTerm));
-        return matchesFilter && matchesSearch;
-    });
+  if (!grid || !searchBox) return;
 
-    let cardsHTML = filtered.map(day => {
-        const isCompleted = completedDays.includes(day.day);
-        const isLocked = day.day > maxUnlocked;
-        const isToday = day.day === maxUnlocked && maxUnlocked > 0;
+  const searchTerm = searchBox.value.toLowerCase();
+  const maxUnlocked = getUnlockedDay();
 
-        if (isLocked) return '';
+  const filtered = challengeData.filter((day) => {
+    const matchesFilter = currentFilter === "all" || day.unit === currentFilter;
+    const matchesSearch =
+      searchTerm === "" ||
+      day.day.toString().includes(searchTerm) ||
+      day.question1.title.toLowerCase().includes(searchTerm) ||
+      day.question2.name.toLowerCase().includes(searchTerm) ||
+      day.topics.some((t) => t.toLowerCase().includes(searchTerm));
 
-        let statusBadge = '';
-        if (isToday) statusBadge = `<span class="unlock-badge">🔥 Today's Challenge</span>`;
-        else if (day.day < maxUnlocked) statusBadge = `<span class="unlock-badge">✓ Unlocked</span>`;
+    return matchesFilter && matchesSearch;
+  });
 
-        return `
-            <div class="day-card ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}">
-                ${statusBadge}
+  grid.innerHTML = filtered
+    .map((day) => {
+      const isCompleted = completedDays.includes(day.day);
+      const isLocked = day.day > maxUnlocked;
+      const isToday = day.day === maxUnlocked && maxUnlocked > 0;
 
-                <div class="day-header">
-                    <div class="day-number">Day ${day.day}</div>
-                    <div class="unit-badge">${day.unit.replace('Unit ', '')}</div>
-                </div>
+      if (isLocked) return "";
 
-                <div class="topics">
-                    ${day.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}
-                </div>
+      let statusBadge = "";
+      if (isToday)
+        statusBadge = `<span class="unlock-badge">🔥 Today's Challenge</span>`;
+      else if (day.day < maxUnlocked)
+        statusBadge = `<span class="unlock-badge">✓ Unlocked</span>`;
 
-                <div class="question">
-                    <div class="question-header">
-                        <span class="question-num">Question 1 - C Programming</span>
-                        <span class="difficulty easy">Practice</span>
-                    </div>
-                    <div class="question-name">${day.question1.title}</div>
-                    <button class="solve-btn" onclick="showDescription(${day.day}, 1)">View Problem →</button>
-                </div>
+      return `
+        <div class="day-card ${isCompleted ? "completed" : ""} ${
+          isToday ? "today" : ""
+        }">
+          ${statusBadge}
 
-                <div class="question">
-                    <div class="question-header">
-                        <span class="question-num">Question 2 - ${day.question2.link.includes('leetcode') ? 'LeetCode' : 'GeeksforGeeks'}</span>
-                        <span class="difficulty ${day.question2.difficulty.toLowerCase()}">${day.question2.difficulty}</span>
-                    </div>
-                    <div class="question-name">${day.question2.name}</div>
-                    <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
-                </div>
+          <div class="day-header">
+            <div class="day-number">Day ${day.day}</div>
+            <div class="unit-badge">${day.unit.replace("Unit ", "")}</div>
+          </div>
 
-                <div class="complete-btn ${isCompleted ? 'completed' : ''}" onclick="toggleComplete(${day.day})">
-                    <span>${isCompleted ? 'Completed' : 'Mark as Complete'}</span>
-                </div>
+          <div class="topics">
+            ${day.topics.map((t) => `<span class="topic-tag">${t}</span>`).join("")}
+          </div>
 
-                ${renderSolutions(day.day, maxUnlocked)}
+          <div class="question">
+            <div class="question-header">
+              <span class="question-num">Question 1 - C Programming</span>
+              <span class="difficulty easy">Practice</span>
             </div>
-        `;
-    }).join('');
+            <div class="question-name">${day.question1.title}</div>
+            <button class="solve-btn" onclick="showDescription(${day.day}, 1)">View Problem →</button>
+          </div>
 
-    grid.innerHTML = cardsHTML;
+          <div class="question">
+            <div class="question-header">
+              <span class="question-num">Question 2</span>
+              <span class="difficulty ${day.question2.difficulty.toLowerCase()}">${day.question2.difficulty}</span>
+            </div>
+            <div class="question-name">${day.question2.name}</div>
+            <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
+          </div>
+
+          <div class="complete-btn ${isCompleted ? "completed" : ""}" onclick="toggleComplete(${day.day})">
+            <span>${isCompleted ? "Completed" : "Mark as Complete"}</span>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
 }
 
-// Initialize
-async function init() {
-    try {
-        const response = await fetch('challenge_syllabus_aligned.json');
-        challengeData = await response.json();
+async function initChallengePage() {
+  try {
+    const response = await fetch("/challenge_syllabus_aligned.json");
+    challengeData = await response.json();
 
-        loadProgress();
+    loadProgress();
+    unlockedDays = getUnlockedDay();
 
-        unlockedDays = getUnlockedDay();
-        updateStats();
-        renderDays();
-
-        updateTimer();
-        setInterval(updateTimer, 1000);
-
-        setInterval(() => {
-            const newUnlocked = getUnlockedDay();
-            if (newUnlocked !== unlockedDays) {
-                unlockedDays = newUnlocked;
-                updateStats();
-                renderDays();
-            }
-        }, 60000);
-
-    } catch (error) {
-        console.error('Error loading challenge data:', error);
-        document.getElementById('daysGrid').innerHTML =
-            '<div style="text-align: center; padding: 40px; color: #ef4444;">Error loading challenge data. Please refresh the page.</div>';
+    updateStats();
+    renderDays();
+  } catch (err) {
+    console.error("Error loading challenge data:", err);
+    const grid = document.getElementById("daysGrid");
+    if (grid) {
+      grid.innerHTML =
+        '<div style="text-align: center; padding: 40px; color: #ef4444;">Error loading challenge data. Please refresh the page.</div>';
     }
+  }
 }
 
-window.addEventListener('DOMContentLoaded', init);
+// ====================== LEETCODE DASHBOARD FUNCTIONS ======================
+async function fetchLeetcodeData(username) {
+  const status = document.getElementById("status");
+  if (!status) return;
+
+  try {
+    status.innerText = "Loading profile...";
+
+    const res = await fetch(`/leetcode/${username}`);
+    const data = await res.json();
+
+    if (data.error) {
+      status.innerText = "User not found!";
+      return;
+    }
+
+    status.innerText = `Profile Loaded: ${username}`;
+
+    showLeetStats(data.submitStats);
+    showBadges(data.badges);
+    generateHeatmap(data.calendar);
+  } catch (err) {
+    status.innerText = "Backend not running!";
+    console.log(err);
+  }
+}
+
+let currentChart = null;
+
+function showLeetStats(stats) {
+  const easy = stats.acSubmissionNum.find((s) => s.difficulty === "Easy");
+  const med = stats.acSubmissionNum.find((s) => s.difficulty === "Medium");
+  const hard = stats.acSubmissionNum.find((s) => s.difficulty === "Hard");
+
+  document.getElementById("easy").innerText = `${easy.count}/924`;
+  document.getElementById("medium").innerText = `${med.count}/2002`;
+  document.getElementById("hard").innerText = `${hard.count}/906`;
+
+  const total = easy.count + med.count + hard.count;
+  document.getElementById("totalSolved").innerText = total;
+
+  if (currentChart) currentChart.destroy();
+
+  const ctx = document.getElementById("progressChart");
+  currentChart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Easy", "Medium", "Hard"],
+      datasets: [
+        {
+          data: [easy.count, med.count, hard.count],
+          backgroundColor: ["#2ea043", "#d29922", "#f85149"],
+          borderWidth: 0,
+          cutout: "75%",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true },
+      },
+    },
+  });
+}
+
+function showBadges(badges) {
+  const div = document.getElementById("badgeSection");
+  const badgeCount = document.getElementById("badgeCount");
+
+  if (!div || !badgeCount) return;
+
+  div.innerHTML = "";
+  badgeCount.innerText = badges.length;
+
+  if (badges.length === 0) {
+    div.innerHTML = `
+      <div class="badge-icon">
+          <div class="badge-empty"></div>
+      </div>
+    `;
+    document.getElementById("recentBadge").innerText = "No badges yet";
+    return;
+  }
+
+  badges.slice(0, 3).forEach((badge) => {
+    const badgeIcon = document.createElement("div");
+    badgeIcon.className = "badge-icon";
+
+    if (badge.icon) {
+      badgeIcon.innerHTML = `<img src="${badge.icon}" alt="${badge.displayName}" title="${badge.displayName}">`;
+    } else {
+      badgeIcon.innerHTML = `<div class="badge-empty"></div>`;
+    }
+
+    div.appendChild(badgeIcon);
+  });
+
+  document.getElementById("recentBadge").innerText = badges[0].displayName;
+}
+
+function getLevel(c) {
+  if (c === 0) return 0;
+  if (c <= 2) return 1;
+  if (c <= 5) return 2;
+  if (c <= 10) return 3;
+  return 4;
+}
+
+function generateHeatmap(calendar) {
+  const heatmap = document.getElementById("heatmap");
+  const monthLabels = document.getElementById("monthLabels");
+
+  if (!heatmap || !monthLabels) return;
+
+  heatmap.innerHTML = "";
+  monthLabels.innerHTML = "";
+
+  const data = calendar.submissionCalendar;
+
+  document.getElementById("activeDaysText").innerText =
+    calendar.totalActiveDays;
+  document.getElementById("streakText").innerText = calendar.streak;
+
+  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  document.getElementById(
+    "submissionText",
+  ).innerText = `${total} submissions in the past one year`;
+
+  let now = new Date();
+  let endUTC = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+  let startUTC = new Date(endUTC);
+  startUTC.setUTCDate(endUTC.getUTCDate() - 364);
+
+  let alignedStart = new Date(startUTC);
+  alignedStart.setUTCDate(startUTC.getUTCDate() - startUTC.getUTCDay());
+
+  let months = {};
+  const totalDays = 371;
+
+  for (let i = 0; i < totalDays; i++) {
+    let date = new Date(alignedStart);
+    date.setUTCDate(alignedStart.getUTCDate() + i);
+
+    let timestamp = Math.floor(
+      Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) /
+        1000,
+    );
+
+    let count = data[timestamp] || 0;
+
+    let div = document.createElement("div");
+    div.className = "day";
+
+    let level = getLevel(count);
+    if (level) div.classList.add("level-" + level);
+
+    div.title = `${date.toDateString()} : ${count}`;
+    heatmap.appendChild(div);
+
+    let month = date.toLocaleString("default", { month: "short" });
+    let week = Math.floor(i / 7);
+
+    if (!months[month]) months[month] = week;
+  }
+
+  for (let [month, pos] of Object.entries(months)) {
+    let m = document.createElement("div");
+    m.className = "month";
+    m.innerText = month;
+    m.style.gridColumnStart = pos + 1;
+    monthLabels.appendChild(m);
+  }
+}
+
+// ====================== PAGE DETECTION ======================
+window.addEventListener("DOMContentLoaded", () => {
+  loadProgress();
+  updateStats();
+  updateTimer();
+
+  setInterval(updateTimer, 1000);
+  setInterval(updateStats, 30000);
+
+  // Challenge Page
+  if (document.getElementById("daysGrid")) {
+    initChallengePage();
+  }
+
+  // LeetCode Page
+  if (document.getElementById("progressChart")) {
+    if (
+      typeof savedLeetcodeId !== "undefined" &&
+      savedLeetcodeId &&
+      savedLeetcodeId !== "null" &&
+      savedLeetcodeId !== "undefined"
+    ) {
+      fetchLeetcodeData(savedLeetcodeId);
+    } else {
+      document.getElementById("status").innerText =
+        "No LeetCode ID found in your profile!";
+    }
+  }
+});

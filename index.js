@@ -48,6 +48,9 @@ app.get("/", isAuthenticated, (req, res) => {
   res.render("index", { user: req.user });
 });
 
+app.get('/challenge', isAuthenticated, (req, res) => {
+  res.render('challenge_questions', { user: req.user });
+});
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

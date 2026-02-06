@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Challenge Questions</title>
+
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+
+    <a href="/" class="logout-btn">⬅ Back</a>
+
+    <div class="container">
+
+        <div class="controls">
+            <input type="text" id="searchBox" placeholder="Search by day, question, or topic..." oninput="searchDays()">
+            <button class="filter-btn active" onclick="setFilter('all')">All</button>
+            <button class="filter-btn" onclick="setFilter('Unit I: Introduction')">Introduction</button>
+            <button class="filter-btn" onclick="setFilter('Unit II: Linked List')">Linked List</button>
+            <button class="filter-btn" onclick="setFilter('Unit III: Stack & Queue')">Stack/Queue</button>
+            <button class="filter-btn" onclick="setFilter('Unit IV: Tree')">Trees</button>
+            <button class="filter-btn" onclick="setFilter('Unit V: Hash Table & Graph')">Hash/Graph</button>
+            <button class="filter-btn" onclick="setFilter('Unit VI: Sorting & Searching')">Sort/Search</button>
+        </div>
+
+        <div class="days-grid" id="daysGrid"></div>
+    </div>
+
+    <!-- Progress Box -->
+    <div class="progress-box">
+        <div class="progress-label">Your Progress</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">
+            <span id="progressCompletedDays">0</span> / <span id="progressTotalDays">100</span> Days
+        </div>
+    </div>
+
+    <!-- Problem Modal -->
+    <div id="problemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="close-btn" onclick="closeModal()">Close</button>
+            </div>
+            <div id="modalDescription"></div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Solution Modal -->
+    <div id="solutionModal" class="fullscreen-modal">
+        <div class="fullscreen-modal-content">
+            <div class="fullscreen-modal-header">
+                <h2 id="solutionModalTitle"></h2>
+                <button class="close-btn" onclick="closeSolutionModal()">Close</button>
+            </div>
+            <div id="solutionModalContent" class="fullscreen-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- ONE JS FILE -->
+    <script src="/app.js"></script>
+
+</body>
+
+</html>
