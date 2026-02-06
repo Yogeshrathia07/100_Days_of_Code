@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LeetCode Dashboard</title>
 
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- CSS -->
     <link rel="stylesheet" href="/leetcode_style.css">
     <link rel="stylesheet" href="/style.css">
@@ -16,19 +20,21 @@
 
 <body>
 
+    <!-- Buttons -->
     <a href="/auth/logout" class="logout-btn">Logout</a>
 
+    <a href="/challenge" class="challenge-btn">
+        Challenge Questions
+    </a>
+
+    <!-- Main Dashboard -->
     <div class="dashboard-container">
 
+        <!-- ===================== LEFT SECTION ===================== -->
         <div class="challenge-header-section">
-            <!-- Button to go to Challenge Questions Page -->
-            <a href="/challenge" class="logout-btn" style="right: 120px; background:#238636;">
-                Challenge Questions
-            </a>
 
-            <!-- ===================== HEADER + INSTRUCTIONS + STATS ===================== -->
             <div class="container">
-                <header>
+                <header class="main-header">
                     <h1>100 Days DSA Challenge 🚀</h1>
                     <p class="subtitle">Master Data Structures & Algorithms</p>
 
@@ -41,8 +47,9 @@
                 <!-- Instructions Banner -->
                 <div class="instructions-banner">
                     <div class="instructions-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
-                            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <polygon points="23 7 16 12 23 17 23 7"></polygon>
                             <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                         </svg>
@@ -50,9 +57,11 @@
 
                     <div class="instructions-content">
                         <div class="instructions-title">📚 How to Use This Challenge</div>
+
                         <div class="instructions-text">
                             👉 ℹ️ Watch this quick video tutorial to learn how to make the most of your 100-day journey!
                         </div>
+
                         <div class="instructions-text">
                             👉 ℹ️ For Optimal Solution Of Platform Specific Problems, Watch Tutorial Video Attached!
                         </div>
@@ -74,40 +83,43 @@
                         <div class="stat-value" id="totalDays">0</div>
                         <div class="stat-label">Unlocked</div>
                     </div>
+
                     <div class="stat-box">
                         <div class="stat-value" id="completedDays">0</div>
                         <div class="stat-label">Completed</div>
                     </div>
+
                     <div class="stat-box">
                         <div class="stat-value" id="streakDays">0</div>
                         <div class="stat-label">Day Streak</div>
                     </div>
                 </div>
+
             </div>
 
-            <hr style="margin:40px 0; border:1px solid #30363d;">
+            <hr class="section-divider">
+
         </div>
 
-        <!-- ===================== LEETCODE DASHBOARD ===================== -->
+        <!-- ===================== RIGHT SECTION ===================== -->
         <div class="leetcode-dashboard-section">
 
-            <h1>LeetCode Dashboard</h1>
+            <h2 class="section-title">LeetCode Dashboard</h2>
             <p id="status">Loading...</p>
 
             <div class="top-section">
 
-                <!-- Progress Card -->
+                <!-- Progress + Badge -->
                 <div class="leetcode_upper">
 
-
+                    <!-- Progress Card -->
                     <div class="card progress-card">
+
                         <div class="chart-container">
                             <canvas id="progressChart"></canvas>
 
                             <div class="chart-center-text">
                                 <div class="number" id="totalSolved">0</div>
-                                <div class="total"></div>
-
                                 <div class="label">
                                     <svg class="check-icon" viewBox="0 0 16 16" fill="#58a6ff">
                                         <path
@@ -127,7 +139,7 @@
                             </div>
 
                             <div class="stat-box">
-                                <div class="stat-label medium">Med.</div>
+                                <div class="stat-label medium">Medium</div>
                                 <div class="stat-value" id="medium">0</div>
                             </div>
 
@@ -155,60 +167,56 @@
 
                 </div>
 
+                <!-- Heatmap -->
                 <div class="leetcode_lower">
 
-                    <!-- Heatmap Card -->
-                    <div class="heatmap-section">
-                        <div class="card heatmap-card">
-                            <div class="heatmap-header">
-                                <div class="heatmap-title" id="submissionText">0 submissions in the past one year</div>
-                                <div class="heatmap-stats">
-                                    Total active days: <span id="activeDaysText">0</span>
-                                    <span style="margin: 0 8px;">|</span>
-                                    Max streak: <span id="streakText">0</span>
-                                </div>
+                    <div class="card heatmap-card">
+
+                        <div class="heatmap-header">
+                            <div class="heatmap-title" id="submissionText">
+                                0 submissions in the past one year
                             </div>
 
-                            <div class="month-labels" id="monthLabels"></div>
-
-                            <div class="heatmap-wrapper">
-                                <div class="day-labels">
-                                    <div>Mon</div>
-                                    <div>Wed</div>
-                                    <div>Fri</div>
-                                </div>
-                                <div class="heatmap" id="heatmap"></div>
-                            </div>
-
-                            <div class="legend">
-                                <span>Less</span>
-                                <div class="legend-item">
-                                    <div class="day"></div>
-                                    <div class="day level-1"></div>
-                                    <div class="day level-2"></div>
-                                    <div class="day level-3"></div>
-                                    <div class="day level-4"></div>
-                                </div>
-                                <span>More</span>
+                            <div class="heatmap-stats">
+                                Total active days: <span id="activeDaysText">0</span>
+                                <span style="margin: 0 8px;">|</span>
+                                Max streak: <span id="streakText">0</span>
                             </div>
                         </div>
+
+                        <div class="month-labels" id="monthLabels"></div>
+
+                        <div class="heatmap-wrapper">
+                            <div class="day-labels">
+                                <div>Mon</div>
+                                <div>Wed</div>
+                                <div>Fri</div>
+                            </div>
+
+                            <div class="heatmap" id="heatmap"></div>
+                        </div>
+
+                        <div class="legend">
+                            <span>Less</span>
+                            <div class="legend-item">
+                                <div class="day"></div>
+                                <div class="day level-1"></div>
+                                <div class="day level-2"></div>
+                                <div class="day level-3"></div>
+                                <div class="day level-4"></div>
+                            </div>
+                            <span>More</span>
+                        </div>
+
                     </div>
 
                 </div>
+
             </div>
+
         </div>
 
-
-
-
-
-
-
-
-
     </div>
-
-
 
     <!-- LeetCode ID -->
     <script>
