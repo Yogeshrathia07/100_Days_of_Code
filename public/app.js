@@ -108,8 +108,7 @@ function updateStats() {
   const progressTotalDaysEl = document.getElementById("progressTotalDays");
   const progressFillEl = document.getElementById("progressFill");
 
-  if (progressCompletedDaysEl)
-    progressCompletedDaysEl.textContent = completed;
+  if (progressCompletedDaysEl) progressCompletedDaysEl.textContent = completed;
 
   if (progressTotalDaysEl) progressTotalDaysEl.textContent = unlocked;
 
@@ -286,12 +285,25 @@ async function fetchLeetcodeData(username) {
     const res = await fetch(`/leetcode/${username}`);
     const data = await res.json();
 
+    console.log("Avatar URL:", data.avatar);
     if (data.error) {
       status.innerText = "User not found!";
       return;
     }
 
-    status.innerText = `Profile Loaded: ${username}`;
+    status.innerText = ``;
+
+    // ✅ Add this block here
+    const avatar = document.getElementById("leetcodeAvatar");
+    const name = document.getElementById("leetcodeName");
+    const uname = document.getElementById("leetcodeUsername");
+
+    if (avatar) avatar.src = data.avatar;
+    if (name)
+      name.innerText = data.realName
+        ? "Hello, " + data.realName
+        : "LeetCode Dashboard";
+    if (uname) uname.innerText = "@" + data.username;
 
     showLeetStats(data.submitStats);
     showBadges(data.badges);
@@ -309,9 +321,10 @@ function showLeetStats(stats) {
   const med = stats.acSubmissionNum.find((s) => s.difficulty === "Medium");
   const hard = stats.acSubmissionNum.find((s) => s.difficulty === "Hard");
 
-  document.getElementById("easy").innerText = `${easy.count}/924`;
-  document.getElementById("medium").innerText = `${med.count}/2002`;
-  document.getElementById("hard").innerText = `${hard.count}/906`;
+  // ✅ Show only solved count (no total)
+  document.getElementById("easy").innerText = easy.count;
+  document.getElementById("medium").innerText = med.count;
+  document.getElementById("hard").innerText = hard.count;
 
   const total = easy.count + med.count + hard.count;
   document.getElementById("totalSolved").innerText = total;
@@ -319,6 +332,7 @@ function showLeetStats(stats) {
   if (currentChart) currentChart.destroy();
 
   const ctx = document.getElementById("progressChart");
+
   currentChart = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -326,15 +340,21 @@ function showLeetStats(stats) {
       datasets: [
         {
           data: [easy.count, med.count, hard.count],
-          backgroundColor: ["#2ea043", "#d29922", "#f85149"],
+          backgroundColor: ["#00B8A3", "#FFC01E", "#EF4743"],
           borderWidth: 0,
-          cutout: "75%",
+
+          spacing: 3, // ✅ adds gap between slices
+          borderRadius: 8, // ✅ rounded edges like LeetCode
         },
       ],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
+
+      // ✅ Make circle thin (increase cutout)
+      cutout: "95%",
+
       plugins: {
         legend: { display: false },
         tooltip: { enabled: true },
@@ -395,16 +415,16 @@ function generateHeatmap(calendar) {
   heatmap.innerHTML = "";
   monthLabels.innerHTML = "";
 
-  const data = calendar.submissionCalendar;
+  // const data = calendar.submissionCalendar;
+  const data = JSON.parse(calendar.submissionCalendar);
 
   document.getElementById("activeDaysText").innerText =
     calendar.totalActiveDays;
   document.getElementById("streakText").innerText = calendar.streak;
 
   const total = Object.values(data).reduce((a, b) => a + b, 0);
-  document.getElementById(
-    "submissionText",
-  ).innerText = `${total} submissions in the past one year`;
+  document.getElementById("submissionText").innerText =
+    `${total} submissions in the past one year`;
 
   let now = new Date();
   let endUTC = new Date(
@@ -442,7 +462,9 @@ function generateHeatmap(calendar) {
     let month = date.toLocaleString("default", { month: "short" });
     let week = Math.floor(i / 7);
 
-    if (!months[month]) months[month] = week;
+    if (date.getUTCDate() === 1) {
+      months[month] = week;
+    }
   }
 
   for (let [month, pos] of Object.entries(months)) {

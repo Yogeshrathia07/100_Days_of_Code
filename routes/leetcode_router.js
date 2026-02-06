@@ -58,13 +58,6 @@ router.get("/:username", async (req, res) => {
           realName
           userAvatar
           ranking
-          reputation
-          starRating
-          aboutMe
-          school
-          countryName
-          company
-          skillTags
         }
         submitStats {
           acSubmissionNum {
@@ -92,37 +85,34 @@ router.get("/:username", async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "*/*"
+        "Referer": "https://leetcode.com"
       },
       body: JSON.stringify({
         query,
         variables: { username }
-      })
+      }),
     });
 
-    const data = await response.json();
+    const result = await response.json();
 
-    if (!data.data || !data.data.matchedUser) {
-      return res.status(404).json({ error: "User not found" });
+    if (!result.data || !result.data.matchedUser) {
+      return res.json({ error: "User not found" });
     }
 
-    const user = data.data.matchedUser;
+    const user = result.data.matchedUser;
 
     res.json({
       username: user.username,
-      profile: user.profile,
-      badges: user.badges,
+      avatar: user.profile.userAvatar,
+      realName: user.profile.realName,
+      ranking: user.profile.ranking,
       submitStats: user.submitStats,
-      calendar: {
-        submissionCalendar: JSON.parse(user.userCalendar.submissionCalendar),
-        totalActiveDays: user.userCalendar.totalActiveDays,
-        streak: user.userCalendar.streak
-      }
+      badges: user.badges,
+      calendar: user.userCalendar
     });
 
-  } catch (error) {
-    console.log("LeetCode fetch error:", error.message);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Server error" });
   }
 });

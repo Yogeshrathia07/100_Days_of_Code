@@ -7,8 +7,7 @@
     <title>LeetCode Dashboard</title>
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/leetcode_style.css">
@@ -47,9 +46,8 @@
                 <!-- Instructions Banner -->
                 <div class="instructions-banner">
                     <div class="instructions-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
-                            fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="23 7 16 12 23 17 23 7"></polygon>
                             <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                         </svg>
@@ -104,7 +102,19 @@
         <!-- ===================== RIGHT SECTION ===================== -->
         <div class="leetcode-dashboard-section">
 
-            <h2 class="section-title">LeetCode Dashboard</h2>
+            <!-- Profile Header (Correct Position) -->
+            <div class="leetcode-profile-header">
+                <img id="leetcodeAvatar"
+                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    alt="avatar"
+                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
+
+                <div>
+                    <h2 class="section-title" id="leetcodeName">LeetCode Dashboard</h2>
+                    <p id="leetcodeUsername">@username</p>
+                </div>
+            </div>
+
             <p id="status">Loading...</p>
 
             <div class="top-section">
@@ -115,21 +125,23 @@
                     <!-- Progress Card -->
                     <div class="card progress-card">
 
-                        <div class="chart-container">
-                            <canvas id="progressChart"></canvas>
+                        <div class="chart-wrapper">
+                            <div class="chart-container">
+                                <canvas id="progressChart"></canvas>
 
-                            <div class="chart-center-text">
-                                <div class="number" id="totalSolved">0</div>
-                                <div class="label">
-                                    <svg class="check-icon" viewBox="0 0 16 16" fill="#58a6ff">
-                                        <path
-                                            d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
-                                    </svg>
-                                    Solved
+                                <div class="chart-center-text">
+                                    <div class="number" id="totalSolved">0</div>
+                                    <div class="label">
+                                        <svg class="check-icon" viewBox="0 0 16 16" fill="#58a6ff">
+                                            <path
+                                                d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                        </svg>
+                                        Solved
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="attempting-text">17 Attempting</div>
+                                <div class="attempting-text">17 Attempting</div>
+                            </div>
                         </div>
 
                         <div class="stats-grid">
@@ -153,8 +165,11 @@
                     <!-- Badge Card -->
                     <div class="card badge-card">
                         <div class="badge-header">
-                            <div class="badge-title">Badges</div>
-                            <div class="badge-count" id="badgeCount">0</div>
+                            <div>
+                                <div class="badge-title">Badges</div>
+                                <div class="badge-count" id="badgeCount">0</div>
+                            </div>
+                            <div class="badge-arrow">→</div>
                         </div>
 
                         <div class="badge-icons" id="badgeSection"></div>
@@ -169,7 +184,6 @@
 
                 <!-- Heatmap -->
                 <div class="leetcode_lower">
-
                     <div class="card heatmap-card">
 
                         <div class="heatmap-header">
@@ -209,7 +223,6 @@
                         </div>
 
                     </div>
-
                 </div>
 
             </div>

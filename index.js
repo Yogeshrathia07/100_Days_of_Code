@@ -45,6 +45,7 @@ app.use("/leetcode" ,leetcodeRoutes);
 
 
 app.get("/", isAuthenticated, (req, res) => {
+  // console.log("Avatar: ", req.user.avatar);
   res.render("index", { user: req.user });
 });
 
