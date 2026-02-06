@@ -1,15 +1,19 @@
-/* ====================== GLOBAL RESET ====================== */
+/* ==========================================================
+   1) GLOBAL RESET
+========================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ====================== GLOBAL ====================== */
 html {
   scroll-behavior: smooth;
 }
 
+/* ==========================================================
+   2) GLOBAL BODY
+========================================================== */
 body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
@@ -24,7 +28,9 @@ body {
   margin: 0 auto;
 }
 
-/* ====================== BUTTONS ====================== */
+/* ==========================================================
+   3) FIXED BUTTONS (Logout + Challenge Button)
+========================================================== */
 .logout-btn {
   position: fixed;
   top: 20px;
@@ -65,10 +71,12 @@ body {
   transform: translateY(-2px);
 }
 
-/* ====================== DASHBOARD LAYOUT ====================== */
+/* ==========================================================
+   4) DASHBOARD PAGE LAYOUT (Index.ejs)
+========================================================== */
 .dashboard-container {
   display: grid;
-  grid-template-columns: 1fr 1.3fr;
+  grid-template-columns: 40% 60%;
   gap: 25px;
   width: 100%;
   max-width: 1600px;
@@ -76,7 +84,9 @@ body {
   padding-top: 80px;
 }
 
-/* ====================== LEFT SECTION ====================== */
+/* ==========================================================
+   5) LEFT SIDE (Challenge Header Section)
+========================================================== */
 .challenge-header-section {
   width: 100%;
 }
@@ -90,14 +100,11 @@ body {
   font-size: 2.6rem;
   font-weight: 800;
   background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
-
   background-clip: text;
   -webkit-background-clip: text;
-
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
-
 
 .subtitle {
   color: #cbd5e1;
@@ -106,7 +113,7 @@ body {
   margin-bottom: 22px;
 }
 
-/* ====================== TIMER ====================== */
+/* ================= TIMER BOX ================= */
 .timer-box {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   border: 2px solid rgba(96, 165, 250, 0.3);
@@ -130,18 +137,15 @@ body {
   font-size: 2.8rem;
   font-weight: 800;
   background: linear-gradient(135deg, #60a5fa, #a78bfa);
-
   background-clip: text;
   -webkit-background-clip: text;
-
   color: transparent;
   -webkit-text-fill-color: transparent;
-
   font-family: "Courier New", monospace;
   letter-spacing: 2px;
 }
 
-/* ====================== INSTRUCTIONS ====================== */
+/* ================= INSTRUCTIONS ================= */
 .instructions-banner {
   background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
   padding: 26px;
@@ -198,7 +202,7 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* ====================== STATS ====================== */
+/* ================= LEFT STATS ================= */
 .stats {
   display: flex;
   justify-content: center;
@@ -215,8 +219,10 @@ body {
   text-align: center;
   transition: 0.3s;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  min-width: 100px;
+
+  width: 160px;
+  height: 100px;
+  flex: 0 0 auto;
 }
 
 .stats .stat-box:hover {
@@ -229,13 +235,10 @@ body {
   font-size: 2rem;
   font-weight: 800;
   background: linear-gradient(135deg, #60a5fa, #a78bfa);
-
   background-clip: text;
   -webkit-background-clip: text;
-
   color: transparent;
   -webkit-text-fill-color: transparent;
-
   margin-bottom: 6px;
 }
 
@@ -247,13 +250,9 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ====================== DIVIDER ====================== */
-.section-divider {
-  margin: 40px 0;
-  border: 1px solid #30363d;
-}
-
-/* ====================== RIGHT SECTION ====================== */
+/* ==========================================================
+   6) RIGHT SIDE (LeetCode Dashboard Section)
+========================================================== */
 .leetcode-dashboard-section {
   width: 100%;
 }
@@ -271,14 +270,12 @@ body {
   font-size: 13px;
 }
 
-/* ====================== GRID INSIDE RIGHT SECTION ====================== */
 .top-section {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Progress + Badge Grid */
 .leetcode_upper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -286,23 +283,22 @@ body {
   width: 100%;
 }
 
-
-/* ====================== CARDS ====================== */
+/* ================= COMMON CARD ================= */
 .card {
   background: #242424;
   border-radius: 14px;
   padding: 18px;
   border: 1px solid #2f2f2f;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: 0.3s;
 }
-
 
 .card:hover {
   transform: translateY(-4px);
   border-color: rgba(96, 165, 250, 0.5);
 }
 
-/* ====================== PROGRESS CARD ====================== */
+/* ================= PROGRESS CARD ================= */
 .progress-card {
   display: flex;
   align-items: center;
@@ -310,18 +306,15 @@ body {
   gap: 18px;
 }
 
-
 .chart-container {
   position: relative;
   width: 170px;
   height: 170px;
   flex-grow: 1;
-  /* THIS is the key */
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 
 .chart-center-text {
   position: absolute;
@@ -362,7 +355,7 @@ body {
   color: #a0a0a0;
 }
 
-/* Stats inside progress */
+/* Progress Card Right Stats */
 .stats-grid {
   display: flex;
   flex-direction: column;
@@ -405,7 +398,7 @@ body {
   color: #ffffff;
 }
 
-/* ====================== BADGE CARD ====================== */
+/* ================= BADGE CARD ================= */
 .badge-header {
   display: flex;
   justify-content: space-between;
@@ -460,7 +453,7 @@ body {
   color: #e2e8f0;
 }
 
-/* ====================== HEATMAP ====================== */
+/* ================= HEATMAP CARD ================= */
 .heatmap-card {
   padding: 20px;
 }
@@ -492,20 +485,11 @@ body {
 .month-labels {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 15px; /* 12px box + 3px gap */
-  gap: 0px;
+  grid-auto-columns: 15px;
   margin-left: 35px;
   margin-bottom: 8px;
   font-size: 12px;
   color: #8b949e;
-}
-
-.month {
-  font-weight: 500;
-  text-align: left;
-}
-.month-labels div {
-  min-width: 44px;
 }
 
 .heatmap-wrapper {
@@ -513,16 +497,6 @@ body {
   gap: 10px;
   overflow-x: auto;
   padding-bottom: 10px;
-}
-
-
-.heatmap-wrapper::-webkit-scrollbar {
-  height: 6px;
-}
-
-.heatmap-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(96, 165, 250, 0.4);
-  border-radius: 10px;
 }
 
 .day-labels {
@@ -545,26 +519,14 @@ body {
 .day {
   width: 12px;
   height: 12px;
-  /* border-radius: 3px; */
   background: #2d2d2d;
-  border: none;
+  border-radius: 3px;
 }
 
-.day.level-1 {
-  background-color: #0e4429;
-}
-
-.day.level-2 {
-  background-color: #006d32;
-}
-
-.day.level-3 {
-  background-color: #26a641;
-}
-
-.day.level-4 {
-  background-color: #39d353;
-}
+.day.level-1 { background: #0e4429; }
+.day.level-2 { background: #006d32; }
+.day.level-3 { background: #26a641; }
+.day.level-4 { background: #39d353; }
 
 .legend {
   display: flex;
@@ -581,29 +543,277 @@ body {
   gap: 3px;
 }
 
-.leetcode-profile-header {
+/* ==========================================================
+   7) CHALLENGE QUESTIONS PAGE CSS (challenge_questions.ejs)
+========================================================== */
+
+/* ================= FILTER CONTROLS ================= */
+.controls {
   display: flex;
+  gap: 12px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#searchBox {
+  flex: 1;
+  min-width: 280px;
+  max-width: 500px;
+  padding: 14px 20px;
+  background: #1e293b;
+  border: 2px solid rgba(96, 165, 250, 0.3);
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+#searchBox:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.filter-btn {
+  padding: 14px 24px;
+  background: #1e293b;
+  border: 2px solid rgba(96, 165, 250, 0.2);
+  border-radius: 12px;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.filter-btn:hover {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 16px rgba(96, 165, 250, 0.3);
+}
+
+/* ================= DAYS GRID ================= */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+  margin: 40px 0;
+}
+
+/* ================= DAY CARD ================= */
+.day-card {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border: 2px solid rgba(96, 165, 250, 0.2);
+  border-radius: 20px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.day-card:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 8px 32px rgba(96, 165, 250, 0.2);
+  transform: translateY(-4px);
+}
+
+.day-card.locked {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
+
+.day-card.completed {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #1e293b 0%, rgba(16, 185, 129, 0.1) 100%);
+}
+
+/* Unlock badge */
+.unlock-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 14px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 2px solid #10b981;
+  border-radius: 24px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #10b981;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  margin-top: 36px;
 }
 
-#leetcodeAvatar {
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  object-fit: cover;
+.day-number {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
-#leetcodeUsername {
-  font-size: 13px;
-  color: #9ca3af;
-  margin-top: -4px;
+.unit-badge {
+  padding: 6px 14px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 2px solid #8b5cf6;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a78bfa;
 }
 
+/* Topics */
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
 
-/* ====================== RESPONSIVE ====================== */
+.topic-tag {
+  padding: 6px 12px;
+  background: rgba(96, 165, 250, 0.1);
+  border: 1.5px solid rgba(96, 165, 250, 0.3);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #60a5fa;
+}
+
+/* Question block */
+.question {
+  background: rgba(15, 23, 42, 0.6);
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  border: 1.5px solid rgba(96, 165, 250, 0.1);
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.question-num {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.difficulty {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.difficulty.easy {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1.5px solid #10b981;
+}
+
+.difficulty.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1.5px solid #f59e0b;
+}
+
+.difficulty.hard {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+}
+
+.question-name {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 14px;
+}
+
+/* Solve button */
+.solve-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.solve-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Complete button */
+.complete-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(96, 165, 250, 0.1),
+    rgba(167, 139, 250, 0.1)
+  );
+  border: 2px solid rgba(96, 165, 250, 0.3);
+  border-radius: 12px;
+  color: #60a5fa;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: 0.3s;
+  margin-top: 16px;
+}
+
+.complete-btn:hover {
+  border-color: #60a5fa;
+  transform: translateY(-2px);
+}
+
+.complete-btn.completed {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(5, 150, 105, 0.15)
+  );
+  border-color: #10b981;
+  color: #10b981;
+  cursor: default;
+}
+
+/* ==========================================================
+   8) RESPONSIVE
+========================================================== */
 @media (max-width: 1100px) {
   .dashboard-container {
     grid-template-columns: 1fr;
@@ -611,10 +821,6 @@ body {
 
   .leetcode_upper {
     grid-template-columns: 1fr;
-  }
-
-  .progress-card {
-    flex-direction: row;
   }
 
   .chart-container {
@@ -649,4 +855,46 @@ body {
   .timer-display {
     font-size: 2.2rem;
   }
+
+  .stats .stat-box {
+    width: 140px;
+    height: 90px;
+  }
+
+  .days-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #searchBox {
+    min-width: 100%;
+  }
+}
+
+.leetcode-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+#leetcodeAvatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: block;
+}
+
+#leetcodeName {
+  font-size: 26px;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+#leetcodeUsername {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-top: 2px;
 }
