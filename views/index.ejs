@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/leetcode_style.css">
+    <!-- <link rel="stylesheet" href="/leetcode_style.css"> -->
     <link rel="stylesheet" href="/style.css">
 
     <!-- Chart JS -->
@@ -20,11 +20,30 @@
 <body>
 
     <!-- Buttons -->
-    <a href="/auth/logout" class="logout-btn">Logout</a>
+    <nav class="top-navbar">
 
-    <a href="/challenge" class="challenge-btn">
-        Challenge Questions
-    </a>
+        
+        <div class="nav-left">
+            <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+
+            <div class="nav-user-info">
+                <div id="leetcodeName" class="nav-name">LeetCode Dashboard</div>
+                <div id="leetcodeUsername" class="nav-username">@username</div>
+            </div>
+        </div>
+
+
+        <header class="main-header">
+            <h1>100 Days DSA Challenge 🚀</h1>
+            <p class="subtitle">Master Data Structures & Algorithms</p>
+        </header>
+        <div class="nav-right">
+            <a href="/challenge" class="nav-link-btn">Challenge Questions</a>
+            <a href="/auth/logout" class="nav-logout-btn">Logout</a>
+        </div>
+
+    </nav>
+
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">
@@ -33,15 +52,36 @@
         <div class="challenge-header-section">
 
             <div class="container">
-                <header class="main-header">
-                    <h1>100 Days DSA Challenge 🚀</h1>
-                    <p class="subtitle">Master Data Structures & Algorithms</p>
 
+
+                <!-- Timer + Stats Row -->
+                <div class="timer-stats-row">
+
+                    <!-- Timer -->
                     <div class="timer-box">
                         <div class="timer-label">Next Day Unlocks In</div>
                         <div class="timer-display" id="timerDisplay">--:--:--</div>
                     </div>
-                </header>
+
+                    <!-- Stats -->
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="totalDays">0</div>
+                            <div class="stat-label">Unlocked</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-value" id="completedDays">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+
+                        <div class="stat-box">
+                            <div class="stat-value" id="streakDays">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+
+                </div>
 
                 <!-- Instructions Banner -->
                 <div class="instructions-banner">
@@ -75,47 +115,19 @@
                     </div>
                 </div>
 
-                <!-- Stats -->
-                <div class="stats">
-                    <div class="stat-box">
-                        <div class="stat-value" id="totalDays">0</div>
-                        <div class="stat-label">Unlocked</div>
-                    </div>
-
-                    <div class="stat-box">
-                        <div class="stat-value" id="completedDays">0</div>
-                        <div class="stat-label">Completed</div>
-                    </div>
-
-                    <div class="stat-box">
-                        <div class="stat-value" id="streakDays">0</div>
-                        <div class="stat-label">Day Streak</div>
-                    </div>
-                </div>
 
             </div>
 
-            <hr class="section-divider">
+            <!-- <hr class="section-divider"> -->
 
         </div>
 
         <!-- ===================== RIGHT SECTION ===================== -->
         <div class="leetcode-dashboard-section">
 
-            <!-- Profile Header (Correct Position) -->
-            <div class="leetcode-profile-header">
-                <img id="leetcodeAvatar"
-                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                    alt="avatar"
-                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
 
-                <div>
-                    <h2 class="section-title" id="leetcodeName">LeetCode Dashboard</h2>
-                    <p id="leetcodeUsername">@username</p>
-                </div>
-            </div>
 
-            <p id="status">Loading...</p>
+
 
             <div class="top-section">
 
@@ -138,9 +150,10 @@
                                         </svg>
                                         Solved
                                     </div>
+                                    <!-- <p id="status">Loading...</p> -->
                                 </div>
 
-                                <div class="attempting-text">17 Attempting</div>
+                                <!-- <div class="attempting-text">17 Attempting</div> -->
                             </div>
                         </div>
 
@@ -198,7 +211,7 @@
                             </div>
                         </div>
 
-                        <div class="month-labels" id="monthLabels"></div>
+                        <!-- <div class="month-labels" id="monthLabels"></div>
 
                         <div class="heatmap-wrapper">
                             <div class="day-labels">
@@ -208,7 +221,24 @@
                             </div>
 
                             <div class="heatmap" id="heatmap"></div>
+                        </div> -->
+
+                        <div class="heatmap-scroll">
+
+                            <div class="month-labels" id="monthLabels"></div>
+
+                            <div class="heatmap-wrapper">
+                                <div class="day-labels">
+                                    <div>Mon</div>
+                                    <div>Wed</div>
+                                    <div>Fri</div>
+                                </div>
+
+                                <div class="heatmap" id="heatmap"></div>
+                            </div>
+
                         </div>
+
 
                         <div class="legend">
                             <span>Less</span>

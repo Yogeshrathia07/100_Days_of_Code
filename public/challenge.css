@@ -1,0 +1,230 @@
+/* ====================== RESET ====================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at top left, #0f172a, #020617);
+  color: #e2e8f0;
+  padding: 18px;
+  min-height: 100vh;
+}
+
+/* ====================== TOP TITLE ====================== */
+.challenge-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.challenge-header h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.challenge-header p {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-top: 8px;
+}
+
+/* ====================== SEARCH + FILTER ====================== */
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+#searchBox {
+  width: 100%;
+  max-width: 520px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  background: rgba(30, 41, 59, 0.6);
+  color: white;
+  outline: none;
+}
+
+.filter-btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-btn:hover {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  border: none;
+}
+
+/* ====================== GRID ====================== */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 18px;
+}
+
+/* ====================== CARD ====================== */
+.day-card {
+  background: rgba(35, 35, 35, 0.85);
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: 0.3s;
+}
+
+.day-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.day-number {
+  font-size: 22px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.unit-badge {
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #c4b5fd;
+}
+
+/* ====================== TOPICS ====================== */
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.topic-tag {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  color: #60a5fa;
+}
+
+/* ====================== QUESTIONS ====================== */
+.question {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.question-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.difficulty {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.difficulty.easy {
+  background: rgba(0, 184, 163, 0.15);
+  border: 1px solid rgba(0, 184, 163, 0.4);
+  color: #00B8A3;
+}
+
+.difficulty.medium {
+  background: rgba(255, 192, 30, 0.15);
+  border: 1px solid rgba(255, 192, 30, 0.4);
+  color: #FFC01E;
+}
+
+.difficulty.hard {
+  background: rgba(239, 71, 67, 0.15);
+  border: 1px solid rgba(239, 71, 67, 0.4);
+  color: #EF4743;
+}
+
+/* ====================== BUTTONS ====================== */
+.solve-btn {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  color: white;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.complete-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  background: rgba(96, 165, 250, 0.1);
+  color: #60a5fa;
+  font-weight: 900;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.complete-btn.completed {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  cursor: default;
+}
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 768px) {
+  .days-grid {
+    grid-template-columns: 1fr;
+  }
+}

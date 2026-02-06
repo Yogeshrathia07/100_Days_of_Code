@@ -6,12 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Challenge Questions</title>
 
+    <link rel="stylesheet" href="/challenge.css" />
     <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
 
-    <a href="/" class="logout-btn">⬅ Back</a>
+
+    <!-- Buttons -->
+    <nav class="top-navbar">
+
+
+        <div class="nav-left">
+            <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+
+            <div class="nav-user-info">
+                <div id="leetcodeName" class="nav-name">LeetCode Dashboard</div>
+                <div id="leetcodeUsername" class="nav-username">@username</div>
+            </div>
+        </div>
+        
+        
+        <header class="main-header">
+            <h1>100 Days DSA Challenge 🚀</h1>
+            <p class="subtitle">Master Data Structures & Algorithms</p>
+        </header>
+        <div class="nav-right">
+            <a href="/" class="nav-link-btn">Challenge Questions</a>
+            <a href="/auth/logout" class="nav-logout-btn">Logout</a>
+        </div>
+        
+    </nav>
+    
+    <p id="status" style="display:none;"></p>
+
+
 
     <div class="container">
 
@@ -63,7 +92,11 @@
     </div>
 
     <!-- ONE JS FILE -->
-    <script src="/app.js"></script>
+    <script>
+        const savedLeetcodeId = "<%= user.leetcode_id %>";
+    </script>
+    <script src="/app.js">
+    </script>
 
 </body>
 

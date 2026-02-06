@@ -275,25 +275,61 @@ async function initChallengePage() {
 }
 
 // ====================== LEETCODE DASHBOARD FUNCTIONS ======================
+// async function fetchLeetcodeData(username) {
+//   const status = document.getElementById("status");
+//   if (!status) return;
+
+//   try {
+//     status.innerText = "Loading profile...";
+
+//     const res = await fetch(`/leetcode/${username}`);
+//     const data = await res.json();
+
+//     // console.log("Avatar URL:", data.avatar);
+//     if (data.error) {
+//       status.innerText = "User not found!";
+//       return;
+//     }
+
+//     status.innerText = ``;
+
+//     // ✅ Add this block here
+//     const avatar = document.getElementById("leetcodeAvatar");
+//     const name = document.getElementById("leetcodeName");
+//     const uname = document.getElementById("leetcodeUsername");
+
+//     if (avatar) avatar.src = data.avatar;
+//     if (name)
+//       name.innerText = data.realName
+//         ? "Hello, " + data.realName
+//         : "LeetCode Dashboard";
+//     if (uname) uname.innerText = "@" + data.username;
+
+//     showLeetStats(data.submitStats);
+//     showBadges(data.badges);
+//     generateHeatmap(data.calendar);
+//   } catch (err) {
+//     status.innerText = "Backend not running!";
+//     console.log(err);
+//   }
+// }
+
 async function fetchLeetcodeData(username) {
-  const status = document.getElementById("status");
-  if (!status) return;
+  const status = document.getElementById("status"); // can be null
 
   try {
-    status.innerText = "Loading profile...";
+    if (status) status.innerText = "Loading profile...";
 
     const res = await fetch(`/leetcode/${username}`);
     const data = await res.json();
 
-    console.log("Avatar URL:", data.avatar);
     if (data.error) {
-      status.innerText = "User not found!";
+      if (status) status.innerText = "User not found!";
       return;
     }
 
-    status.innerText = ``;
+    if (status) status.innerText = "";
 
-    // ✅ Add this block here
     const avatar = document.getElementById("leetcodeAvatar");
     const name = document.getElementById("leetcodeName");
     const uname = document.getElementById("leetcodeUsername");
@@ -309,7 +345,7 @@ async function fetchLeetcodeData(username) {
     showBadges(data.badges);
     generateHeatmap(data.calendar);
   } catch (err) {
-    status.innerText = "Backend not running!";
+    if (status) status.innerText = "Backend not running!";
     console.log(err);
   }
 }
