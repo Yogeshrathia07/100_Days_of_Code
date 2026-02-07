@@ -10,22 +10,24 @@ let currentFilter = "all";
 let completedDays = [];
 let unlockedDays = 0;
 
-// ====================== COMMON FUNCTIONS ======================
-function loadProgress() {
-  const saved = localStorage.getItem("dsa-100-days-progress");
-  if (saved) {
-    try {
-      completedDays = JSON.parse(saved);
-    } catch (e) {
+// ====================== LOAD PROGRESS FROM DATABASE ======================
+async function loadProgressFromDB() {
+  try {
+    const res = await fetch("/progress/get");
+    const data = await res.json();
+
+    if (data.success) {
+      completedDays = data.challengeProgress.map((d) => d.day);
+    } else {
       completedDays = [];
     }
+  } catch (err) {
+    console.log("Error loading progress from DB:", err);
+    completedDays = [];
   }
 }
 
-function saveProgress() {
-  localStorage.setItem("dsa-100-days-progress", JSON.stringify(completedDays));
-}
-
+// ====================== UNLOCK DAY LOGIC ======================
 function getUnlockedDay() {
   const now = new Date();
   const start = new Date(CONFIG.startDate + "T" + CONFIG.unlockTime + ":00");
@@ -44,6 +46,7 @@ function getUnlockedDay() {
   return Math.min(Math.max(0, diffDays), 100);
 }
 
+// ====================== STREAK LOGIC ======================
 function calculateStreak() {
   if (completedDays.length === 0) return 0;
 
@@ -88,7 +91,7 @@ function updateTimer() {
   }
 }
 
-// ====================== STATS ======================
+// ====================== UPDATE STATS ======================
 function updateStats() {
   const unlocked = getUnlockedDay();
   const completed = completedDays.length;
@@ -102,9 +105,7 @@ function updateStats() {
   if (completedDaysEl) completedDaysEl.textContent = completed;
   if (streakDaysEl) streakDaysEl.textContent = streak;
 
-  const progressCompletedDaysEl = document.getElementById(
-    "progressCompletedDays",
-  );
+  const progressCompletedDaysEl = document.getElementById("progressCompletedDays");
   const progressTotalDaysEl = document.getElementById("progressTotalDays");
   const progressFillEl = document.getElementById("progressFill");
 
@@ -117,19 +118,34 @@ function updateStats() {
   }
 }
 
-// ====================== CHALLENGE PAGE FUNCTIONS ======================
-function toggleComplete(day) {
-  if (completedDays.includes(day)) {
-    completedDays = completedDays.filter((d) => d !== day);
-  } else {
-    completedDays.push(day);
-  }
+// ====================== TOGGLE COMPLETE (SAVE TO DB) ======================
+async function toggleComplete(day) {
+  try {
+    const res = await fetch("/progress/toggle", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ day }),
+    });
 
-  saveProgress();
-  updateStats();
-  renderDays();
+    const data = await res.json();
+
+    if (data.success) {
+      completedDays = data.challengeProgress.map((d) => d.day);
+
+      updateStats();
+      renderDays();
+    } else {
+      alert("Error saving progress!");
+    }
+  } catch (err) {
+    console.log("Toggle error:", err);
+    alert("Backend not running!");
+  }
 }
 
+// ====================== FILTER ======================
 function setFilter(filter) {
   currentFilter = filter;
 
@@ -137,18 +153,18 @@ function setFilter(filter) {
     .querySelectorAll(".filter-btn")
     .forEach((btn) => btn.classList.remove("active"));
 
-  const activeBtn = document.querySelector(
-    `[onclick="setFilter('${filter}')"]`,
-  );
+  const activeBtn = document.querySelector(`[onclick="setFilter('${filter}')"]`);
   if (activeBtn) activeBtn.classList.add("active");
 
   renderDays();
 }
 
+// ====================== SEARCH ======================
 function searchDays() {
   renderDays();
 }
 
+// ====================== SHOW DESCRIPTION MODAL ======================
 function showDescription(day, questionNum) {
   const dayData = challengeData.find((d) => d.day === day);
   if (!dayData) return;
@@ -176,6 +192,7 @@ function closeSolutionModal() {
   document.body.style.overflow = "auto";
 }
 
+// ====================== RENDER DAYS ======================
 function renderDays() {
   const grid = document.getElementById("daysGrid");
   const searchBox = document.getElementById("searchBox");
@@ -187,6 +204,7 @@ function renderDays() {
 
   const filtered = challengeData.filter((day) => {
     const matchesFilter = currentFilter === "all" || day.unit === currentFilter;
+
     const matchesSearch =
       searchTerm === "" ||
       day.day.toString().includes(searchTerm) ||
@@ -253,18 +271,20 @@ function renderDays() {
     .join("");
 }
 
+// ====================== INIT CHALLENGE PAGE ======================
 async function initChallengePage() {
   try {
     const response = await fetch("/challenge_syllabus_aligned.json");
     challengeData = await response.json();
 
-    loadProgress();
-    unlockedDays = getUnlockedDay();
+    await loadProgressFromDB();
 
+    unlockedDays = getUnlockedDay();
     updateStats();
     renderDays();
   } catch (err) {
     console.error("Error loading challenge data:", err);
+
     const grid = document.getElementById("daysGrid");
     if (grid) {
       grid.innerHTML =
@@ -275,8 +295,6 @@ async function initChallengePage() {
 
 // ====================== PAGE DETECTION ======================
 window.addEventListener("DOMContentLoaded", () => {
-  loadProgress();
-  updateStats();
   updateTimer();
 
   setInterval(updateTimer, 1000);
@@ -285,5 +303,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // Challenge Page
   if (document.getElementById("daysGrid")) {
     initChallengePage();
+  }
+  // Dashboard Page (stats only)
+  else {
+    loadProgressFromDB().then(() => updateStats());
   }
 });
