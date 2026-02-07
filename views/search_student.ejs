@@ -38,7 +38,7 @@
             <div class="error-box">
                 ❌ <%= error %>
             </div>
-        <% } %>
+            <% } %>
     </div>
 
     <!-- STUDENT + DASHBOARD -->
@@ -51,9 +51,15 @@
                 <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
 
                 <div class="student-profile-info">
-                    <h3>Name: <span><%= student.name %></span></h3>
-                    <p><b>SAP ID:</b> <span><%= student.SAP_ID %></span></p>
-                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername"><%= student.leetcode_id %></span></p>
+                    <h3>Name: <span>
+                            <%= student.name %>
+                        </span></h3>
+                    <p><b>SAP ID:</b> <span>
+                            <%= student.SAP_ID %>
+                        </span></p>
+                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername">
+                            <%= student.leetcode_id %>
+                        </span></p>
                 </div>
             </div>
 
@@ -255,6 +261,9 @@
         <script>
             const studentSapId = "<%= student.SAP_ID %>";
 
+            // ================================
+            // 100 DAYS HEATMAP FETCH
+            // ================================
             async function fetchChallengeProgress() {
                 try {
                     const response = await fetch(`/admin/challenge-progress/${studentSapId}`);
@@ -268,29 +277,32 @@
                 }
             }
 
+            // ================================
+            // 100 DAYS HEATMAP CREATE
+            // ================================
             function createChallengeHeatmap(progressArray) {
                 const tooltip = document.getElementById("challengeTooltip");
-                const gridContainer = document.getElementById('challengeHeatmapGrid');
+                const gridContainer = document.getElementById("challengeHeatmapGrid");
 
                 const completedDays = new Set(progressArray.map(p => p.day));
 
                 const totalCompleted = completedDays.size;
                 const progressPercent = Math.round((totalCompleted / 100) * 100);
 
-                document.getElementById('challengeCompletedDays').textContent = totalCompleted;
-                document.getElementById('challengeProgressPercent').textContent = progressPercent + '%';
+                document.getElementById("challengeCompletedDays").textContent = totalCompleted;
+                document.getElementById("challengeProgressPercent").textContent = progressPercent + "%";
 
-                gridContainer.innerHTML = '';
+                gridContainer.innerHTML = "";
 
                 for (let day = 1; day <= 100; day++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'challenge-day-cell';
+                    const cell = document.createElement("div");
+                    cell.className = "challenge-day-cell";
                     cell.textContent = day;
 
                     let completedAtDate = null;
 
                     if (completedDays.has(day)) {
-                        cell.classList.add('completed');
+                        cell.classList.add("completed");
 
                         const dayData = progressArray.find(p => p.day === day);
                         if (dayData && dayData.completedAt) {
@@ -303,15 +315,21 @@
                         tooltip.style.display = "block";
 
                         if (completedAtDate) {
+                            const formattedDate = completedAtDate.toLocaleString("en-IN", {
+                                timeZone: "Asia/Kolkata",
+                                dateStyle: "medium",
+                                timeStyle: "short"
+                            });
+
                             tooltip.innerHTML = `
-                                <div style="color:#60a5fa;font-weight:800;">Day ${day}</div>
-                                <div style="color:#e5e7eb;">Completed on: ${completedAtDate.toDateString()}</div>
-                            `;
+                        <div style="color:#60a5fa;font-weight:800;">Day ${day}</div>
+                        <div style="color:#e5e7eb;">Completed on: ${formattedDate}</div>
+                    `;
                         } else {
                             tooltip.innerHTML = `
-                                <div style="color:#9ca3af;font-weight:800;">Day ${day}</div>
-                                <div style="color:#e5e7eb;">Not completed</div>
-                            `;
+                        <div style="color:#9ca3af;font-weight:800;">Day ${day}</div>
+                        <div style="color:#e5e7eb;">Not completed</div>
+                    `;
                         }
 
                         const rect = gridContainer.getBoundingClientRect();
@@ -330,6 +348,9 @@
 
             fetchChallengeProgress();
 
+            // ================================
+            // 150 DAYS HEATMAP FETCH
+            // ================================
             async function fetchChallengeHeatmap150() {
                 try {
                     const response = await fetch(`/admin/challenge-heatmap150/${studentSapId}`);
@@ -343,6 +364,9 @@
                 }
             }
 
+            // ================================
+            // 150 DAYS HEATMAP CREATE
+            // ================================
             function createHeatmap150(progressArray) {
                 const heatmap = document.getElementById("ch150Heatmap");
                 const tooltip = document.getElementById("ch150Tooltip");
@@ -357,7 +381,11 @@
                 progressArray.forEach(item => {
                     if (!item.completedAt) return;
 
-                    const key = new Date(item.completedAt).toISOString().split("T")[0];
+                    const dateObj = new Date(item.completedAt);
+
+                    // ✅ FIX: Use LOCAL date (not UTC)
+                    const key = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
+
                     countMap[key] = (countMap[key] || 0) + 1;
                 });
 
@@ -369,7 +397,9 @@
                     const currentDate = new Date(startDate);
                     currentDate.setDate(startDate.getDate() + i);
 
-                    const key = currentDate.toISOString().split("T")[0];
+                    // ✅ FIX: Local key generation for currentDate too
+                    const key = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+
                     const count = countMap[key] || 0;
 
                     if (count > 0) {
@@ -396,14 +426,14 @@
 
                         if (count > 0) {
                             tooltip.innerHTML = `
-                                <div style="color:#ffd166;font-weight:800;">${count} Task(s) Completed</div>
-                                <div>${dayName}, ${formattedDate}</div>
-                            `;
+                    <div style="color:#ffd166;font-weight:800;">${count} Task(s) Completed</div>
+                    <div>${dayName}, ${formattedDate}</div>
+                `;
                         } else {
                             tooltip.innerHTML = `
-                                <div style="color:#9ca3af;font-weight:800;">No Submission</div>
-                                <div>${dayName}, ${formattedDate}</div>
-                            `;
+                    <div style="color:#9ca3af;font-weight:800;">No Submission</div>
+                    <div>${dayName}, ${formattedDate}</div>
+                `;
                         }
 
                         tooltip.style.left = (e.pageX + 15) + "px";
@@ -424,7 +454,8 @@
             fetchChallengeHeatmap150();
         </script>
 
-    <% } %>
+
+        <% } %>
 
 </body>
 
