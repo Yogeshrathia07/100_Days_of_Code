@@ -9,6 +9,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* ==========================================================
@@ -21,53 +22,163 @@ body {
   padding: 20px;
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
 }
-
-/* .container {
-  max-width: 1400px;
-  margin: 0 auto;
-} */
 
 /* ==========================================================
-   3) FIXED BUTTONS (Logout + Challenge Button)
+   3) NAVBAR
 ========================================================== */
-.logout-btn {
-  position: fixed;
-  top: 20px;
-  right: 30px;
-  padding: 10px 20px;
-  background: rgba(239, 68, 68, 0.15);
-  border: 2px solid #ef4444;
-  border-radius: 12px;
-  color: #ef4444;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.3s;
-  z-index: 2000;
+.top-navbar {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto 25px;
+  padding: 14px 20px;
+  border-radius: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  position: relative;
+  overflow: hidden;
 }
 
-.logout-btn:hover {
-  background: rgba(239, 68, 68, 0.35);
+/* glossy shine strip */
+.top-navbar::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -30%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.0)
+  );
+  transform: rotate(15deg);
+  pointer-events: none;
+}
+
+.top-navbar:hover {
+  border-color: rgba(96, 165, 250, 0.35);
+  box-shadow: 
+    0 10px 35px rgba(0, 0, 0, 0.55),
+    0 0 25px rgba(96, 165, 250, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+}
+
+/* LEFT SIDE */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav-left img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(96, 165, 250, 0.35);
+}
+
+/* NAME + USERNAME */
+.nav-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+}
+
+.nav-username {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+/* MIDDLE - HEADER */
+.main-header {
+  text-align: center;
+  flex: 1;
+  padding: 5px 0;
+}
+
+.main-header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-link-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.nav-link-btn:hover {
+  background: rgba(34, 197, 94, 0.25);
   transform: translateY(-2px);
 }
 
-.challenge-btn {
-  position: fixed;
-  top: 20px;
-  right: 150px;
-  padding: 10px 20px;
-  background: rgba(34, 197, 94, 0.15);
-  border: 2px solid #22c55e;
-  border-radius: 12px;
-  color: #22c55e;
-  font-weight: 700;
+.nav-logout-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
   text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   transition: 0.3s;
-  z-index: 2000;
+  white-space: nowrap;
 }
 
-.challenge-btn:hover {
-  background: rgba(34, 197, 94, 0.35);
+.nav-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
   transform: translateY(-2px);
 }
 
@@ -76,43 +187,24 @@ body {
 ========================================================== */
 .dashboard-container {
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 1fr 1fr;
   gap: 25px;
   width: 100%;
   max-width: 1600px;
-  margin: auto;
+  margin: 0 auto;
   align-items: flex-start;
 }
-
 
 /* ==========================================================
    5) LEFT SIDE (Challenge Header Section)
 ========================================================== */
 .challenge-header-section {
   width: 100%;
+  min-width: 0;
 }
 
-.main-header {
-  text-align: center;
-  padding: 5px 0;
-  margin-bottom: 20px;
-}
-
-.main-header h1 {
-  font-size: 2.6rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #ec4899 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-  color: #cbd5e1;
-  font-size: 1.1rem;
-  font-weight: 500;
-  /* margin-bottom: 22px; */
+.container {
+  width: 100%;
 }
 
 /* ================= TIMER + STATS ROW ================= */
@@ -128,16 +220,18 @@ body {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   border: 2px solid rgba(96, 165, 250, 0.3);
   border-radius: 18px;
-  padding: 22px 28px;
+  padding: 0px 28px;
+  /* padding-top: 18px; */
   box-shadow: 0 8px 32px rgba(96, 165, 250, 0.15);
   text-align: center;
+  width: 100%;
 }
 
 .timer-label {
   color: #94a3b8;
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-top: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -159,6 +253,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  width: 100%;
 }
 
 .stats .stat-box {
@@ -210,7 +305,7 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
-  margin-bottom: 20px;
+  width: 100%;
 }
 
 .instructions-icon {
@@ -226,6 +321,7 @@ body {
 
 .instructions-content {
   flex: 1;
+  min-width: 0;
 }
 
 .instructions-title {
@@ -274,350 +370,6 @@ body {
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.3), transparent);
   margin: 30px 0;
-}
-
-/* ==========================================================
-   6) RIGHT SIDE (LeetCode Dashboard Section)
-========================================================== */
-.leetcode-dashboard-section {
-  width: 100%;
-}
-
-.section-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 6px;
-}
-
-#status {
-  color: #a0a0a0;
-  margin-bottom: 24px;
-  font-size: 13px;
-}
-
-.top-section {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.leetcode_upper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  width: 100%;
-}
-
-/* ================= COMMON CARD ================= */
-.card {
-  background: #242424;
-  border-radius: 14px;
-  padding: 18px;
-  border: 1px solid #2f2f2f;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(96, 165, 250, 0.5);
-}
-
-/* ================= PROGRESS CARD ================= */
-.progress-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.chart-wrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.chart-container {
-  position: relative;
-  width: 170px;
-  height: 170px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.chart-center-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  pointer-events: none;
-}
-
-.chart-center-text .number {
-  font-size: 40px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.chart-center-text .label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
-  font-size: 12px;
-  color: #cbd5e1;
-}
-
-.check-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.attempting-text {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: #a0a0a0;
-}
-
-/* Progress Card Right Stats */
-.stats-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 140px;
-  flex-shrink: 0;
-}
-
-.stats-grid .stat-box {
-  background: #2f2f2f;
-  border-radius: 10px;
-  padding: 10px 12px;
-  text-align: center;
-  border: 1px solid #3a3a3a;
-  width: 100%;
-}
-
-.stats-grid .stat-label {
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-.stats-grid .stat-label.easy {
-  color: #00b8a3;
-}
-
-.stats-grid .stat-label.medium {
-  color: #ffc01e;
-}
-
-.stats-grid .stat-label.hard {
-  color: #ef4743;
-}
-
-.stats-grid .stat-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-/* ================= BADGE CARD ================= */
-.badge-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.badge-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.badge-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.badge-count {
-  font-size: 28px;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.badge-arrow {
-  font-size: 24px;
-  color: #94a3b8;
-}
-
-.badge-icons {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.badge-icons img {
-  width: 55px;
-  height: 55px;
-  border-radius: 10px;
-  transition: 0.2s;
-}
-
-.badge-icons img:hover {
-  transform: scale(1.1);
-}
-
-.recent-badge-section {
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  margin-top: auto;
-}
-
-.recent-badge-label {
-  font-size: 12px;
-  color: #94a3b8;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-#recentBadge {
-  font-size: 14px;
-  color: #e2e8f0;
-}
-
-/* ================= HEATMAP CARD ================= */
-.leetcode_lower {
-  width: 100%;
-}
-
-.heatmap-card {
-  /* padding: 20px;
-  width: 100%; */
-  overflow: hidden;
-}
-
-.heatmap-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.heatmap-title {
-  font-size: 13px;
-  color: #cbd5e1;
-}
-
-.heatmap-stats {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-.heatmap-stats span {
-  color: #ffffff;
-  font-weight: 700;
-}
-
-/* .month-labels {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 15px;
-  margin-left: 35px;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: #8b949e;
-} */
-
-.month-labels {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 15px;
-  margin-left: 40px;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: #8b949e;
-  min-width: 780px; /* same width as heatmap */
-}
-
-
-/* .heatmap-wrapper {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-} */
-
-.heatmap-wrapper {
-  width: 100%;
-  /* overflow-x: auto; */
-  padding-bottom: 10px;
-}
-
-
-.day-labels {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #8b949e;
-  padding-top: 2px;
-  min-width: 30px;
-}
-
-/* .heatmap {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(7, 12px);
-  gap: 3px;
-} */
-
-.heatmap {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(7, 12px);
-  gap: 3px;
-  min-width: 780px;
-}
-
-
-.day {
-  width: 12px;
-  height: 12px;
-  background: #2d2d2d;
-  border: none;
-}
-
-.day.level-1 { background: #0e4429; }
-.day.level-2 { background: #006d32; }
-.day.level-3 { background: #26a641; }
-.day.level-4 { background: #39d353; }
-
-.legend {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: #8b949e;
-  margin-top: 12px;
-}
-
-.legend-item {
-  display: flex;
-  gap: 3px;
 }
 
 /* ==========================================================
@@ -889,107 +641,21 @@ body {
 }
 
 /* ==========================================================
-   8) NAVBAR
-========================================================== */
-
-.top-navbar {
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto 25px;
-  padding: 14px 20px;
-  border-radius: 14px;
-  background: rgba(20, 20, 20, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  backdrop-filter: blur(10px);
-}
-
-/* LEFT SIDE */
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.nav-left img {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(96, 165, 250, 0.35);
-}
-
-/* NAME + USERNAME */
-.nav-user-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.nav-name {
-  font-size: 20px;
-  font-weight: 800;
-  color: white;
-}
-
-.nav-username {
-  font-size: 13px;
-  color: #9ca3af;
-  margin-top: 2px;
-}
-
-/* RIGHT SIDE */
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.nav-link-btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  color: white;
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  transition: 0.3s;
-}
-
-.nav-link-btn:hover {
-  background: rgba(34, 197, 94, 0.25);
-  transform: translateY(-2px);
-}
-
-.nav-logout-btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  transition: 0.3s;
-}
-
-.nav-logout-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
-  transform: translateY(-2px);
-}
-
-/* ==========================================================
    9) RESPONSIVE
 ========================================================== */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .dashboard-container {
     grid-template-columns: 1fr;
   }
+}
 
-  .leetcode_upper {
-    grid-template-columns: 1fr;
+@media (max-width: 1200px) {
+  .main-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
   }
 }
 
@@ -1002,10 +668,29 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
+    padding: 16px;
+  }
+
+  .nav-left {
+    width: 100%;
+  }
+
+  .main-header {
+    width: 100%;
+    order: 2;
+  }
+
+  .main-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
   }
 
   .nav-right {
     width: 100%;
+    order: 3;
   }
 
   .nav-link-btn,
@@ -1014,22 +699,9 @@ body {
     text-align: center;
   }
 
-  .logout-btn {
-    right: 15px;
-    top: 15px;
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-
-  .challenge-btn {
-    right: 15px;
-    top: 60px;
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-
-  .main-header h1 {
-    font-size: 2rem;
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .timer-display {
@@ -1050,25 +722,6 @@ body {
     text-align: center;
   }
 
-  .chart-container {
-    width: 200px;
-    height: 200px;
-  }
-
-  .progress-card {
-    flex-direction: column;
-  }
-
-  .stats-grid {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .stats-grid .stat-box {
-    flex: 1;
-  }
-
   .days-grid {
     grid-template-columns: 1fr;
   }
@@ -1080,7 +733,7 @@ body {
 
 @media (max-width: 480px) {
   .main-header h1 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   .timer-display {
@@ -1098,150 +751,4 @@ body {
   .instructions-text {
     font-size: 0.85rem;
   }
-
-  .chart-container {
-    width: 160px;
-    height: 160px;
-  }
-
-  .chart-center-text .number {
-    font-size: 32px;
-  }
-}
-
-/* Additional profile styling */
-.leetcode-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 18px;
-}
-
-#leetcodeAvatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  display: block;
-}
-
-#leetcodeName {
-  font-size: 26px;
-  font-weight: 800;
-  color: white;
-  margin: 0;
-}
-
-#leetcodeUsername {
-  font-size: 14px;
-  color: #9ca3af;
-  margin-top: 2px;
-}
-
-@media (max-width: 768px) {
-  .dashboard-container {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-  }
-
-  .challenge-header-section,
-  .leetcode-dashboard-section {
-    width: 100% !important;
-  }
-}
-@media (max-width: 768px) {
-  .dashboard-container {
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-}
-
-.heatmap-scroll {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 10px;
-}
-
-/* Month labels aligned with heatmap */
-.month-labels {
-  display: grid;
-  grid-template-columns: repeat(53, 12px);
-  gap: 3px;
-  margin-left: 40px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  color: #8b949e;
-  width: fit-content;
-}
-
-/* Wrapper row (labels + heatmap) */
-.heatmap-wrapper {
-  display: flex;
-  gap: 10px;
-  width: fit-content;
-}
-
-/* Heatmap grid */
-.heatmap {
-  display: grid;
-  grid-template-columns: repeat(53, 12px);
-  grid-template-rows: repeat(7, 12px);
-  gap: 3px;
-  width: fit-content;
-}
-
-
-.top-navbar {
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto 25px;
-  padding: 14px 20px;
-  border-radius: 16px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-
-  box-shadow: 
-    0 8px 30px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
-  position: relative;
-  overflow: hidden;
-}
-
-/* glossy shine strip */
-.top-navbar::before {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: -30%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.0)
-  );
-  transform: rotate(15deg);
-  pointer-events: none;
-}
-.top-navbar:hover {
-  border-color: rgba(96, 165, 250, 0.35);
-  box-shadow: 
-    0 10px 35px rgba(0, 0, 0, 0.55),
-    0 0 25px rgba(96, 165, 250, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: 0.3s;
 }
