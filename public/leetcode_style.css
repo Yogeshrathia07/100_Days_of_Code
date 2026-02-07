@@ -434,4 +434,66 @@
 
 
 
+/* ===================== CHALLENGE HEATMAP GRID ===================== */
+.challenge-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    gap: 5px; /* ✅ Increased for better spacing */
+    padding: 20px;
+    margin: 15px auto;
+    max-width: 900px;
+}
 
+.challenge-day-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px; /* ✅ Slightly bigger for readability */
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 28px; /* ✅ Slightly bigger boxes */
+    height: 28px;
+}
+
+.challenge-day-cell:hover {
+    transform: scale(1.2);
+    border-color: rgba(96, 165, 250, 0.8);
+    z-index: 10;
+}
+
+.challenge-day-cell.completed {
+    background-color: #10b981;
+    color: white;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* ✅ MOBILE/TABLET VIEW */
+@media(max-width: 768px) {
+    .challenge-heatmap-grid {
+        grid-template-columns: repeat(10, 1fr);
+        gap: 4px;
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .challenge-day-cell {
+        font-size: 7px;
+        width: auto;
+        height: auto;
+        min-width: 22px;
+        min-height: 22px;
+    }
+}
+
+@media(max-width: 480px) {
+    .challenge-heatmap-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
+    }
+}

@@ -194,10 +194,10 @@
             <div class="error-box">
                 ❌ <%= error %>
             </div>
-        <% } %>
+            <% } %>
     </div>
 
-    <!-- STUDENT + DASHBOARD -->
+    <!-- ✅ STUDENT + DASHBOARD (ONLY ONE if(student) BLOCK) -->
     <% if(student) { %>
 
         <!-- STUDENT PROFILE -->
@@ -207,11 +207,15 @@
                 <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
 
                 <div class="student-profile-info">
-                    <!-- <h3 id="leetcodeName"><%= student.name %></h3> -->
-                     <h3>Name: <span><%= student.name %></span></h3>
-                    
-                    <p><b>SAP ID:</b> <span><%= student.SAP_ID %></span></p>
-                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername"><%= student.leetcode_id %></span></p>
+                    <h3>Name: <span>
+                            <%= student.name %>
+                        </span></h3>
+                    <p><b>SAP ID:</b> <span>
+                            <%= student.SAP_ID %>
+                        </span></p>
+                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername">
+                            <%= student.leetcode_id %>
+                        </span></p>
                 </div>
             </div>
 
@@ -284,6 +288,36 @@
 
                 </div>
 
+                <!-- ✅ CHALLENGE PROGRESS HEATMAP -->
+                <div class="leetcode_lower" style="margin-top: 20px;">
+                    <div class="card heatmap-card">
+
+                        <div class="heatmap-header">
+                            <div class="heatmap-title">
+                                🚀 100 Days DSA Challenge Progress
+                            </div>
+
+                            <div class="heatmap-stats">
+                                Completed: <span id="challengeCompletedDays">0</span> / 100 days
+                                <span style="margin: 0 8px;">|</span>
+                                Progress: <span id="challengeProgressPercent">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="challenge-heatmap-grid" id="challengeHeatmapGrid"></div>
+
+                        <div class="legend" style="margin-top: 15px;">
+                            <span>Not Started</span>
+                            <div class="legend-item">
+                                <div class="day" style="background-color: rgba(255,255,255,0.1);"></div>
+                                <div class="day" style="background-color: #10b981;"></div>
+                            </div>
+                            <span>Completed</span>
+                        </div>
+
+                    </div>
+                </div>
+
                 <!-- HEATMAP -->
                 <div class="leetcode_lower">
                     <div class="card heatmap-card">
@@ -332,14 +366,74 @@
             </div>
         </div>
 
-        <!-- IMPORTANT: savedLeetcodeId only once -->
+        <!-- LEETCODE SCRIPTS -->
         <script>
             const savedLeetcodeId = "<%= student.leetcode_id %>";
         </script>
-
         <script src="/leetcode.js"></script>
 
-    <% } %>
+        <!-- ✅ CHALLENGE PROGRESS FETCH -->
+        <script>
+            const studentSapId = "<%= student.SAP_ID %>";
+
+            async function fetchChallengeProgress() {
+                try {
+                    const response = await fetch(`/admin/challenge-progress/${studentSapId}`);
+                    const data = await response.json();
+
+                    console.log("Challenge Progress Data:", data);
+                    createChallengeHeatmap(data.challengeProgress);
+
+                } catch (error) {
+                    console.error("Error fetching challenge progress:", error);
+                }
+            }
+
+            function createChallengeHeatmap(progressArray) {
+                console.log("Creating heatmap with:", progressArray);
+
+                // Get completed days as a Set for quick lookup
+                const completedDays = new Set(progressArray.map(p => p.day));
+
+                // Update stats
+                const totalCompleted = completedDays.size;
+                const progressPercent = Math.round((totalCompleted / 100) * 100);
+
+                document.getElementById('challengeCompletedDays').textContent = totalCompleted;
+                document.getElementById('challengeProgressPercent').textContent = progressPercent + '%';
+
+                // Create 100 day cells
+                const gridContainer = document.getElementById('challengeHeatmapGrid');
+                gridContainer.innerHTML = '';
+
+                for (let day = 1; day <= 100; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'challenge-day-cell';
+                    cell.textContent = day;
+                    cell.title = `Day ${day}`;
+
+                    // Mark as completed if day exists in progressArray
+                    if (completedDays.has(day)) {
+                        cell.classList.add('completed');
+
+                        // Find the completion date
+                        const dayData = progressArray.find(p => p.day === day);
+                        if (dayData) {
+                            const date = new Date(dayData.completedAt);
+                            cell.title = `Day ${day} - Completed on ${date.toLocaleDateString()}`;
+                        }
+                    } else {
+                        cell.title = `Day ${day} - Not completed`;
+                    }
+
+                    gridContainer.appendChild(cell);
+                }
+            }
+
+            fetchChallengeProgress();
+        </script>
+
+        <% } %>
 
 </body>
 

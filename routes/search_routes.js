@@ -30,4 +30,22 @@ router.post("/search", async (req, res) => {
   res.render("search_student", { student, error: null });
 });
 
+// ✅ NEW: API to fetch challenge progress data
+router.get("/challenge-progress/:sapid", async (req, res) => {
+  try {
+    const student = await User.findOne({ SAP_ID: req.params.sapid });
+    
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.json({
+      challengeProgress: student.challengeProgress || [],
+      totalCompleted: student.challengeProgress?.length || 0
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;
