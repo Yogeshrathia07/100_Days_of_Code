@@ -1,9 +1,19 @@
 // ====================== LEETCODE DASHBOARD FUNCTIONS ======================
 async function fetchLeetcodeData(username) {
-  const status = document.getElementById("status"); // can be null
+  const status = document.getElementById("status");
+
+  // ✅ Step 1: Load cached data first
+  const cachedData = loadLeetcodeCache(username);
+
+  if (cachedData) {
+    console.log("Loaded LeetCode data from cache");
+    updateLeetcodeUI(cachedData);
+
+    if (status) status.innerText = "Loaded from cache ✅";
+  }
 
   try {
-    if (status) status.innerText = "Loading profile...";
+    if (status) status.innerText = "Fetching latest data...";
 
     const res = await fetch(`/leetcode/${username}`);
     const data = await res.json();
@@ -13,27 +23,20 @@ async function fetchLeetcodeData(username) {
       return;
     }
 
+    // ✅ Step 2: Update UI with fresh data
+    updateLeetcodeUI(data);
+
+    // ✅ Step 3: Save in cache
+    saveLeetcodeCache(username, data);
+
     if (status) status.innerText = "";
-
-    const avatar = document.getElementById("leetcodeAvatar");
-    const name = document.getElementById("leetcodeName");
-    const uname = document.getElementById("leetcodeUsername");
-
-    if (avatar) avatar.src = data.avatar;
-    if (name)
-      name.innerText = data.realName
-        ? "Hello, " + data.realName
-        : "LeetCode Dashboard";
-    if (uname) uname.innerText = "@" + data.username;
-
-    showLeetStats(data.submitStats);
-    showBadges(data.badges);
-    generateHeatmap(data.calendar);
+    console.log("Fetched fresh LeetCode data and updated cache");
   } catch (err) {
     if (status) status.innerText = "Backend not running!";
     console.log(err);
   }
 }
+
 
 let currentChart = null;
 
@@ -194,7 +197,7 @@ function generateHeatmap(calendar) {
 // ====================== PAGE DETECTION ======================
 window.addEventListener("DOMContentLoaded", () => {
   // LeetCode Page
-  if (document.getElementById("progressChart")) {
+  if (document.getElementById("leetcodeAvatar")) {
     if (
       typeof savedLeetcodeId !== "undefined" &&
       savedLeetcodeId &&
@@ -208,3 +211,44 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+
+// ====================== Save in cache ======================
+function saveLeetcodeCache(username, data) {
+  localStorage.setItem(
+    `leetcode-cache-${username}`,
+    JSON.stringify({
+      savedAt: Date.now(),
+      data: data,
+    }),
+  );
+}
+
+function loadLeetcodeCache(username) {
+  const cached = localStorage.getItem(`leetcode-cache-${username}`);
+  if (!cached) return null;
+
+  try {
+    return JSON.parse(cached).data;
+  } catch (err) {
+    return null;
+  }
+}
+
+function updateLeetcodeUI(data) {
+  const avatar = document.getElementById("leetcodeAvatar");
+  const name = document.getElementById("leetcodeName");
+  const uname = document.getElementById("leetcodeUsername");
+
+  if (avatar) avatar.src = data.avatar;
+  if (name)
+    name.innerText = data.realName
+      ? "Hello, " + data.realName
+      : "LeetCode Dashboard";
+
+  if (uname) uname.innerText = "@" + data.username;
+
+  showLeetStats(data.submitStats);
+  showBadges(data.badges);
+  generateHeatmap(data.calendar);
+}
