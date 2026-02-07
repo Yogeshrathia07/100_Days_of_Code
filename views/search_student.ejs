@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Student</title>
+
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/leetcode_style.css">
+
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ===================== TEACHER PANEL SEARCH BAR ===================== */
+        .search-panel {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .search-panel h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        .search-panel p {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 2px solid rgba(96, 165, 250, 0.25);
+            background: #111827;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-form input:focus {
+            border-color: rgba(96, 165, 250, 0.8);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+
+        .search-form button {
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: white;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .search-form button:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        /* ===================== ERROR MESSAGE ===================== */
+        .error-box {
+            margin-top: 15px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* ===================== STUDENT PROFILE CARD ===================== */
+        .student-profile-card {
+            width: 100%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 22px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+        }
+
+        .student-profile-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .student-profile-box img {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(96, 165, 250, 0.4);
+        }
+
+        .student-profile-info h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .student-profile-info p {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin: 4px 0;
+        }
+
+        .student-profile-info p span {
+            color: white;
+            font-weight: 700;
+        }
+
+        .divider-line {
+            margin: 20px 0;
+            height: 1px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===================== DASHBOARD WRAPPER ===================== */
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* status text */
+        #status {
+            margin: 10px 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        @media(max-width: 768px) {
+            .student-profile-box {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="top-navbar">
+        <header class="main-header">
+            <h1>Teacher Dashboard 🔍</h1>
+            <p class="subtitle">Search Student Progress Using SAP ID</p>
+        </header>
+    </nav>
+
+    <!-- SEARCH PANEL -->
+    <div class="search-panel">
+        <h2>Search Student</h2>
+        <p>Enter the SAP ID to view the student's LeetCode performance.</p>
+
+        <form action="/admin/search" method="POST" class="search-form">
+            <input type="text" name="sapid" placeholder="Enter SAP ID..." required />
+            <button type="submit">Search</button>
+        </form>
+
+        <% if(error) { %>
+            <div class="error-box">
+                ❌ <%= error %>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- STUDENT + DASHBOARD -->
+    <% if(student) { %>
+
+        <!-- STUDENT PROFILE -->
+        <div class="student-profile-card">
+
+            <div class="student-profile-box">
+                <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+
+                <div class="student-profile-info">
+                    <!-- <h3 id="leetcodeName"><%= student.name %></h3> -->
+                     <h3>Name: <span><%= student.name %></span></h3>
+                    
+                    <p><b>SAP ID:</b> <span><%= student.SAP_ID %></span></p>
+                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername"><%= student.leetcode_id %></span></p>
+                </div>
+            </div>
+
+            <div class="divider-line"></div>
+
+            <!-- STATUS -->
+            <p id="status">Loading LeetCode data...</p>
+
+            <!-- DASHBOARD -->
+            <div class="dashboard-wrapper">
+
+                <!-- PROGRESS + BADGES -->
+                <div class="leetcode_upper">
+
+                    <!-- Progress Card -->
+                    <div class="card progress-card">
+
+                        <div class="chart-wrapper">
+                            <div class="chart-container">
+                                <canvas id="progressChart"></canvas>
+
+                                <div class="chart-center-text">
+                                    <div class="number" id="totalSolved">0</div>
+                                    <div class="label">
+                                        <svg class="check-icon" viewBox="0 0 16 16" fill="#58a6ff">
+                                            <path
+                                                d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
+                                        </svg>
+                                        Solved
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-label easy">Easy</div>
+                                <div class="stat-value" id="easy">0</div>
+                            </div>
+
+                            <div class="stat-box">
+                                <div class="stat-label medium">Medium</div>
+                                <div class="stat-value" id="medium">0</div>
+                            </div>
+
+                            <div class="stat-box">
+                                <div class="stat-label hard">Hard</div>
+                                <div class="stat-value" id="hard">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Badge Card -->
+                    <div class="card badge-card">
+                        <div class="badge-header">
+                            <div>
+                                <div class="badge-title">Badges</div>
+                                <div class="badge-count" id="badgeCount">0</div>
+                            </div>
+                            <div class="badge-arrow">→</div>
+                        </div>
+
+                        <div class="badge-icons" id="badgeSection"></div>
+
+                        <div class="recent-badge-section">
+                            <div class="recent-badge-label">Most Recent Badge</div>
+                            <div id="recentBadge">No badges yet</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- HEATMAP -->
+                <div class="leetcode_lower">
+                    <div class="card heatmap-card">
+
+                        <div class="heatmap-header">
+                            <div class="heatmap-title" id="submissionText">
+                                0 submissions in the past one year
+                            </div>
+
+                            <div class="heatmap-stats">
+                                Total active days: <span id="activeDaysText">0</span>
+                                <span style="margin: 0 8px;">|</span>
+                                Max streak: <span id="streakText">0</span>
+                            </div>
+                        </div>
+
+                        <div class="heatmap-scroll">
+                            <div class="month-labels" id="monthLabels"></div>
+
+                            <div class="heatmap-wrapper">
+                                <div class="day-labels">
+                                    <div>Mon</div>
+                                    <div>Wed</div>
+                                    <div>Fri</div>
+                                </div>
+
+                                <div class="heatmap" id="heatmap"></div>
+                            </div>
+                        </div>
+
+                        <div class="legend">
+                            <span>Less</span>
+                            <div class="legend-item">
+                                <div class="day"></div>
+                                <div class="day level-1"></div>
+                                <div class="day level-2"></div>
+                                <div class="day level-3"></div>
+                                <div class="day level-4"></div>
+                            </div>
+                            <span>More</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- IMPORTANT: savedLeetcodeId only once -->
+        <script>
+            const savedLeetcodeId = "<%= student.leetcode_id %>";
+        </script>
+
+        <script src="/leetcode.js"></script>
+
+    <% } %>
+
+</body>
+
+</html>

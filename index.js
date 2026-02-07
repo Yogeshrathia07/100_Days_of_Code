@@ -53,6 +53,10 @@ app.get('/challenge', isAuthenticated, (req, res) => {
   res.render('challenge_questions', { user: req.user });
 });
 
+const searchRoutes = require("./routes/search_routes");
+app.use("/admin", searchRoutes);
+
+
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });
