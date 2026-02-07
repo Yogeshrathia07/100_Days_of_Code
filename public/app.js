@@ -119,14 +119,137 @@ function updateStats() {
 }
 
 // ====================== TOGGLE COMPLETE (SAVE TO DB) ======================
-async function toggleComplete(day) {
+// async function toggleComplete(day) {
+//   try {
+//     const res = await fetch("/progress/toggle", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ day }),
+//     });
+
+//     const data = await res.json();
+
+//     if (data.success) {
+//       completedDays = data.challengeProgress.map((d) => d.day);
+
+//       updateStats();
+//       renderDays();
+//     } else {
+//       alert("Error saving progress!");
+//     }
+//   } catch (err) {
+//     console.log("Toggle error:", err);
+//     alert("Backend not running!");
+//   }
+// }
+
+
+// async function toggleComplete(day) {
+
+//   // ====================== CONFIRM POPUP ======================
+//   const confirmText = `Day ${day}`;
+
+//   const userInput = prompt(
+//     `To mark this day as complete, type:\n\n${confirmText}`
+//   );
+
+//   // If user pressed cancel
+//   if (userInput === null) return;
+
+//   // If wrong input
+//   if (userInput.trim().toLowerCase() !== confirmText.toLowerCase()) {
+//     alert("❌ Incorrect text! Please type exactly as shown.");
+//     return;
+//   }
+
+//   // ====================== BACKEND REQUEST ======================
+//   try {
+//     const res = await fetch("/progress/toggle", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ day }),
+//     });
+
+//     const data = await res.json();
+
+//     if (data.success) {
+//       completedDays = data.challengeProgress.map((d) => d.day);
+
+//       updateStats();
+//       renderDays();
+//     } else {
+//       alert("❌ Error saving progress!");
+//     }
+//   } catch (err) {
+//     console.log("Toggle error:", err);
+//     alert("❌ Backend not running!");
+//   }
+// }
+
+
+// ===================== MODAL VARIABLES =====================
+let selectedDay = null;
+let confirmText = "";
+
+// ===================== OPEN MODAL =====================
+function openCompleteModal(day) {
+  selectedDay = day;
+  confirmText = `Day ${day}`;
+
+  const expectedTextEl = document.getElementById("expectedText");
+  const inputEl = document.getElementById("modalInput");
+  const modalEl = document.getElementById("completeModal");
+
+  if (!expectedTextEl || !inputEl || !modalEl) return;
+
+  expectedTextEl.innerText = confirmText;
+  inputEl.value = "";
+
+  modalEl.style.display = "flex";
+
+  setTimeout(() => {
+    inputEl.focus();
+  }, 100);
+}
+
+// ===================== CLOSE MODAL =====================
+function closeCompleteModal() {
+  const modalEl = document.getElementById("completeModal");
+  if (!modalEl) return;
+
+  modalEl.style.display = "none";
+  selectedDay = null;
+  confirmText = "";
+}
+
+// ===================== CONFIRM COMPLETE =====================
+async function confirmCompleteDay() {
+  const inputEl = document.getElementById("modalInput");
+  if (!inputEl) return;
+
+  const input = inputEl.value.trim();
+
+  if (input.toLowerCase() !== confirmText.toLowerCase()) {
+    alert("❌ Incorrect text! Please type exactly.");
+    return;
+  }
+
+  // ✅ store day before closing modal
+  const dayToSend = selectedDay;
+
+  closeCompleteModal();
+
   try {
     const res = await fetch("/progress/toggle", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ day }),
+      body: JSON.stringify({ day: dayToSend }),
     });
 
     const data = await res.json();
@@ -137,13 +260,32 @@ async function toggleComplete(day) {
       updateStats();
       renderDays();
     } else {
-      alert("Error saving progress!");
+      alert("❌ Error saving progress!");
     }
   } catch (err) {
     console.log("Toggle error:", err);
-    alert("Backend not running!");
+    alert("❌ Backend not running!");
   }
 }
+
+// ===================== KEYBOARD EVENTS =====================
+document.addEventListener("keydown", (e) => {
+  const modalEl = document.getElementById("completeModal");
+  if (!modalEl) return;
+
+  // Enter key confirms
+  if (e.key === "Enter" && modalEl.style.display === "flex") {
+    confirmCompleteDay();
+  }
+
+  // ESC closes modal
+  if (e.key === "Escape" && modalEl.style.display === "flex") {
+    closeCompleteModal();
+  }
+});
+
+
+
 
 // ====================== FILTER ======================
 function setFilter(filter) {
@@ -262,9 +404,13 @@ function renderDays() {
             <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
           </div>
 
-          <div class="complete-btn ${isCompleted ? "completed" : ""}" onclick="toggleComplete(${day.day})">
+          
+
+          <div class="complete-btn ${isCompleted ? "completed" : ""}" 
+              onclick="openCompleteModal(${day.day})">
             <span>${isCompleted ? "Completed" : "Mark as Complete"}</span>
           </div>
+
         </div>
       `;
     })
