@@ -48,4 +48,25 @@ router.get("/challenge-progress/:sapid", async (req, res) => {
   }
 });
 
+router.get("/challenge-heatmap150/:sapid", async (req, res) => {
+  try {
+    const sapid = req.params.sapid;
+
+    const student = await User.findOne({ SAP_ID: sapid });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.json({
+      challengeProgress: student.challengeProgress || [],
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 module.exports = router;

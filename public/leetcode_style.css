@@ -1,4 +1,3 @@
-
 /* ==========================================================
    6) RIGHT SIDE (LeetCode Dashboard Section)
 ========================================================== */
@@ -45,11 +44,6 @@
   transition: 0.3s;
   min-width: 0;
 }
-
-/* .card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(96, 165, 250, 0.5);
-} */
 
 /* ================= PROGRESS CARD ================= */
 .progress-card {
@@ -107,16 +101,6 @@
   height: 14px;
 }
 
-.attempting-text {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: #a0a0a0;
-}
-
-/* Progress Card Right Stats */
 .stats-grid {
   display: flex;
   flex-direction: column;
@@ -128,7 +112,6 @@
 .stats-grid .stat-box {
   background: #2f2f2f;
   border-radius: 10px;
-  /* padding: 10px 12px; */
   text-align: center;
   border: 1px solid #3a3a3a;
   width: 100%;
@@ -137,7 +120,6 @@
 .stats-grid .stat-label {
   font-size: 11px;
   font-weight: 700;
-  /* margin-bottom: 6px; */
   padding: 6px;
   text-transform: uppercase;
 }
@@ -234,12 +216,9 @@
 
 .heatmap-card {
   margin-top: 20px;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column; */
+  position: relative;
 }
 
 .heatmap-header {
@@ -272,9 +251,6 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 10px;
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
 }
 
 .heatmap-scroll::-webkit-scrollbar {
@@ -295,19 +271,6 @@
   background: #60a5fa;
 }
 
-/* Month labels aligned with heatmap */
-/* .month-labels {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 12px;
-  gap: 3px;
-  margin-left: 40px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  color: #8b949e;
-  width: fit-content;
-} */
-
 .month-labels {
   display: grid;
   grid-auto-flow: column;
@@ -321,24 +284,14 @@
   margin-right: auto;
 }
 
-
-/* Wrapper row (labels + heatmap) */
-/* .heatmap-wrapper {
-  display: flex;
-  gap: 10px;
-  width: fit-content;
-  min-width: min-content;
-} */
-
 .heatmap-wrapper {
   display: flex;
   gap: 10px;
   width: fit-content;
-  margin: 0 auto;      /* ✅ add this */
+  margin: 0 auto;
 }
 
-
-.day-labels {
+.ch150-days-labels {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -349,7 +302,6 @@
   flex-shrink: 0;
 }
 
-/* Heatmap grid */
 .heatmap {
   display: grid;
   grid-auto-flow: column;
@@ -358,20 +310,30 @@
   width: fit-content;
 }
 
-
 .day {
   width: 12px;
   height: 12px;
   background: #2d2d2d;
   border: none;
-    border-radius: 2px;
+  border-radius: 2px;
   flex-shrink: 0;
 }
 
-.day.level-1 { background: #0e4429; }
-.day.level-2 { background: #006d32; }
-.day.level-3 { background: #26a641; }
-.day.level-4 { background: #39d353; }
+.day.level-1 {
+  background: #0e4429;
+}
+
+.day.level-2 {
+  background: #006d32;
+}
+
+.day.level-3 {
+  background: #26a641;
+}
+
+.day.level-4 {
+  background: #39d353;
+}
 
 .legend {
   display: flex;
@@ -389,9 +351,9 @@
 }
 
 /* ==========================================================
-   Additional profile styling
+   STUDENT PROFILE
 ========================================================== */
-.leetcode-profile-header {
+.student-profile-header {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -405,13 +367,6 @@
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.2);
   display: block;
-}
-
-#leetcodeName {
-  font-size: 26px;
-  font-weight: 800;
-  color: white;
-  margin: 0;
 }
 
 #leetcodeUsername {
@@ -450,297 +405,377 @@
   }
 }
 
-@media (max-width: 480px) {
-  .chart-container {
-    width: 160px;
-    height: 160px;
-  }
-
-  .chart-center-text .number {
-    font-size: 32px;
-  }
+/* ==========================================================
+   TEACHER PANEL SEARCH BAR
+========================================================== */
+.search-panel {
+  width: 100%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
+.search-panel h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 6px;
+}
 
+.search-panel p {
+  color: #cbd5e1;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
 
+.search-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-/* ===================== CHALLENGE HEATMAP GRID ===================== */
+.search-form input {
+  flex: 1;
+  min-width: 250px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid rgba(96, 165, 250, 0.25);
+  background: #111827;
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-form input:focus {
+  border-color: rgba(96, 165, 250, 0.8);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.search-form button {
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  color: white;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.search-form button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+/* ===================== ERROR MESSAGE ===================== */
+.error-box {
+  margin-top: 15px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ===================== STUDENT PROFILE CARD ===================== */
+.student-profile-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+.student-profile-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.student-profile-box img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(96, 165, 250, 0.4);
+}
+
+.student-profile-info h3 {
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.student-profile-info p {
+  font-size: 14px;
+  color: #cbd5e1;
+  margin: 4px 0;
+}
+
+.student-profile-info p span {
+  color: white;
+  font-weight: 700;
+}
+
+.divider-line {
+  margin: 20px 0;
+  height: 1px;
+  width: 100%;
+  background: rgba(255, 255,  255, 0.12);
+}
+
+/* ===================== DASHBOARD WRAPPER ===================== */
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ==========================================================
+   100 DAYS CHALLENGE HEATMAP GRID (FIXED TOOLTIP + ALIGNMENT)
+========================================================== */
+
 .challenge-heatmap-grid {
-    display: grid;
-    grid-template-columns: repeat(20, 1fr);
-    gap: 5px; /* ✅ Increased for better spacing */
-    padding: 20px;
-    margin: 15px auto;
-    max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 10px;
+  padding: 20px;
+  margin: 15px auto;
+  max-width: 950px;
+  justify-content: center;
 }
 
 .challenge-day-cell {
-    aspect-ratio: 1;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8px; /* ✅ Slightly bigger for readability */
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 28px; /* ✅ Slightly bigger boxes */
-    height: 28px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
+
+  position: relative;
+  z-index: 1;
 }
 
 .challenge-day-cell:hover {
-    transform: scale(1.2);
-    border-color: rgba(96, 165, 250, 0.8);
-    z-index: 10;
+  transform: scale(1.2);
+  border: 2px solid rgba(96, 165, 250, 0.95);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.55);
+  z-index: 999;
 }
 
 .challenge-day-cell.completed {
-    background-color: #10b981;
-    color: white;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  background: #248ab6;
+  color: white;
+  border: 1px solid rgba(96, 165, 250, 0.65);
+  box-shadow: 0 0 12px rgba(13, 99, 139, 0.8);
 }
 
-/* ✅ MOBILE/TABLET VIEW */
+.challenge-day-cell.completed:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 22px rgba(96, 165, 250, 0.75);
+}
+
+.challenge-tooltip {
+  position: absolute;
+  background: rgba(17, 24, 39, 0.97);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  display: none;
+  z-index: 999999;
+  backdrop-filter: blur(10px);
+}
+
+/* Responsive */
 @media(max-width: 768px) {
-    .challenge-heatmap-grid {
-        grid-template-columns: repeat(10, 1fr);
-        gap: 4px;
-        max-width: 100%;
-        padding: 15px;
-    }
-    
-    .challenge-day-cell {
-        font-size: 7px;
-        width: auto;
-        height: auto;
-        min-width: 22px;
-        min-height: 22px;
-    }
+  .challenge-heatmap-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .challenge-day-cell {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
 }
 
 @media(max-width: 480px) {
-    .challenge-heatmap-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 3px;
-    }
+  .challenge-heatmap-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .challenge-day-cell {
+    width: 26px;
+    height: 26px;
+    font-size: 9px;
+  }
 }
 
-        /* ===================== TEACHER PANEL SEARCH BAR ===================== */
-        .search-panel {
-            width: 100%;
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-        }
+/* ==========================================================
+   CH150 HEATMAP (Feb 1 - 150 Days) - ORANGE THEME
+   Same spacing + same responsive like 100 Days
+========================================================== */
 
-        .search-panel h2 {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 6px;
-        }
+.ch150-scroll {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-bottom: 12px;
+}
 
-        .search-panel p {
-            color: #cbd5e1;
-            font-size: 14px;
-            margin-bottom: 18px;
-        }
+.ch150-full {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-        .search-form {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+/* Grid (Same as challenge heatmap) */
+.ch150-grid {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 10px;
+  padding: 20px;
+  margin: 15px auto;
+  max-width: 950px;
+  justify-content: center;
+}
 
-        .search-form input {
-            flex: 1;
-            min-width: 250px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            border: 2px solid rgba(96, 165, 250, 0.25);
-            background: #111827;
-            color: white;
-            font-size: 15px;
-            outline: none;
-            transition: 0.3s;
-        }
+/* Cell (Same size like challenge-day-cell) */
+.ch150-cell {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-        .search-form input:focus {
-            border-color: rgba(96, 165, 250, 0.8);
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
-        }
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border 0.25s ease;
 
-        .search-form button {
-            padding: 14px 22px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            border: none;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            color: white;
-            font-size: 15px;
-            transition: 0.3s;
-        }
+  position: relative;
+  z-index: 1;
+}
 
-        .search-form button:hover {
-            transform: translateY(-2px);
-            opacity: 0.95;
-        }
+/* Levels */
+.ch150-cell.level-1 {
+  background: #5a3d00;
+}
 
-        /* ===================== ERROR MESSAGE ===================== */
-        .error-box {
-            margin-top: 15px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-            font-weight: 600;
-            font-size: 14px;
-        }
+.ch150-cell.level-2 {
+  background: #a66b00;
+}
 
-        /* ===================== STUDENT PROFILE CARD ===================== */
-        .student-profile-card {
-            width: 100%;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 22px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
-        }
+.ch150-cell.level-3 {
+  background: #ff9f1a;
+}
 
-        .student-profile-box {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
+.ch150-cell.level-4 {
+  background: #ffd166;
+}
 
-        .student-profile-box img {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(96, 165, 250, 0.4);
-        }
+/* Hover (same effect style) */
+.ch150-cell:hover {
+  transform: scale(1.2);
+  border: 2px solid rgba(255, 193, 7, 0.95);
+  box-shadow: 0 0 18px rgba(255, 193, 7, 0.55);
+  z-index: 999;
+}
 
-        .student-profile-info h3 {
-            font-size: 24px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 8px;
-        }
+/* Legend */
+.ch150-legend {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-top: 14px;
+}
 
-        .student-profile-info p {
-            font-size: 14px;
-            color: #cbd5e1;
-            margin: 4px 0;
-        }
+.ch150-legend-boxes {
+  display: flex;
+  gap: 6px;
+}
 
-        .student-profile-info p span {
-            color: white;
-            font-weight: 700;
-        }
+/* Tooltip */
+.ch150-tooltip {
+  position: absolute;
+  background: rgba(17, 24, 39, 0.97);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  display: none;
+  z-index: 999999;
+  backdrop-filter: blur(10px);
+}
 
-        .divider-line {
-            margin: 20px 0;
-            height: 1px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.12);
-        }
+/* ==========================================================
+   RESPONSIVE (Same like 100 days)
+========================================================== */
 
-        /* ===================== DASHBOARD WRAPPER ===================== */
-        .dashboard-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+@media(max-width: 768px) {
+  .ch150-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 100%;
+    padding: 15px;
+  }
 
-        /* status text */
-        #status {
-            margin: 10px 0 20px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #60a5fa;
-        }
+  .ch150-cell {
+    width: 28px;
+    height: 28px;
+  }
+}
 
-        /* ===================== CHALLENGE HEATMAP GRID ===================== */
-        .challenge-heatmap-grid {
-            display: grid;
-            grid-template-columns: repeat(20, 1fr);
-            gap: 5px;
-            padding: 20px;
-            margin: 15px auto;
-            max-width: 900px;
-        }
+@media(max-width: 480px) {
+  .ch150-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
 
-        .challenge-day-cell {
-            aspect-ratio: 1;
-            border-radius: 4px;
-            background-color: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 28px;
-            height: 28px;
-        }
-
-        .challenge-day-cell:hover {
-            transform: scale(1.2);
-            border-color: rgba(96, 165, 250, 0.8);
-            z-index: 10;
-        }
-
-        .challenge-day-cell.completed {
-            background-color: #10b981;
-            color: white;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-        }
-
-        /* ✅ MOBILE/TABLET VIEW */
-        @media(max-width: 768px) {
-            .challenge-heatmap-grid {
-                grid-template-columns: repeat(10, 1fr);
-                gap: 4px;
-                max-width: 100%;
-                padding: 15px;
-            }
-
-            .challenge-day-cell {
-                font-size: 7px;
-                width: auto;
-                height: auto;
-                min-width: 22px;
-                min-height: 22px;
-            }
-
-            .student-profile-box {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media(max-width: 480px) {
-            .challenge-heatmap-grid {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 3px;
-            }
-        }
+  .ch150-cell {
+    width: 26px;
+    height: 26px;
+  }
+}

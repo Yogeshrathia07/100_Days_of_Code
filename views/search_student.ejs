@@ -11,6 +11,7 @@
 
     <!-- Chart JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -40,7 +41,7 @@
         <% } %>
     </div>
 
-    <!-- ✅ STUDENT + DASHBOARD -->
+    <!-- STUDENT + DASHBOARD -->
     <% if(student) { %>
 
         <!-- STUDENT PROFILE -->
@@ -145,12 +146,11 @@
                             <div class="month-labels" id="monthLabels"></div>
 
                             <div class="heatmap-wrapper">
-                                <div class="day-labels">
+                                <div class="ch150-days-labels">
                                     <div>Mon</div>
                                     <div>Wed</div>
                                     <div>Fri</div>
                                 </div>
-
                                 <div class="heatmap" id="heatmap"></div>
                             </div>
                         </div>
@@ -170,9 +170,9 @@
                     </div>
                 </div>
 
-                <!-- ✅ CHALLENGE PROGRESS HEATMAP (Day 1-100) -->
+                <!-- 100 DAYS CHALLENGE PROGRESS -->
                 <div class="leetcode_lower" style="margin-top: 20px;">
-                    <div class="card heatmap-card">
+                    <div class="card heatmap-card challenge-card">
 
                         <div class="heatmap-header">
                             <div class="heatmap-title">
@@ -188,13 +188,52 @@
 
                         <div class="challenge-heatmap-grid" id="challengeHeatmapGrid"></div>
 
-                        <div class="legend" style="margin-top: 15px;">
-                            <span>Not Started</span>
-                            <div class="legend-item">
-                                <div class="day" style="background-color: rgba(255,255,255,0.1);"></div>
-                                <div class="day" style="background-color: #10b981;"></div>
+                        <!-- Tooltip (fixed placement) -->
+                        <div id="challengeTooltip" class="challenge-tooltip"></div>
+
+                    </div>
+                </div>
+
+                <!-- 150 DAYS HEATMAP -->
+                <div class="leetcode_lower" style="margin-top: 20px;">
+                    <div class="card heatmap-card">
+
+                        <div class="heatmap-header">
+                            <div class="heatmap-title">
+                                📅 150 Days Challenge Heatmap (Feb 1 - 150 Days)
                             </div>
-                            <span>Completed</span>
+
+                            <div class="heatmap-stats">
+                                Active Days: <span id="ch150ActiveDays">0</span>
+                                <span style="margin: 0 8px;">|</span>
+                                Max Streak: <span id="ch150MaxStreak">0</span>
+                            </div>
+                        </div>
+
+                        <div class="ch150-scroll">
+                            <div class="ch150-full">
+
+                                <div class="ch150-months" id="ch150MonthLabels"></div>
+
+                                <div class="ch150-wrapper">
+                                    <div class="ch150-grid" id="ch150Heatmap"></div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="ch150-legend">
+                            <span>Less</span>
+
+                            <div class="ch150-legend-boxes">
+                                <div class="ch150-cell"></div>
+                                <div class="ch150-cell level-1"></div>
+                                <div class="ch150-cell level-2"></div>
+                                <div class="ch150-cell level-3"></div>
+                                <div class="ch150-cell level-4"></div>
+                            </div>
+
+                            <span>More</span>
                         </div>
 
                     </div>
@@ -203,17 +242,19 @@
             </div>
         </div>
 
-        <!-- LEETCODE SCRIPTS -->
+        <!-- TOOLTIP -->
+        <div id="ch150Tooltip" class="ch150-tooltip"></div>
+
+        <!-- LEETCODE SCRIPT -->
         <script>
             const savedLeetcodeId = "<%= student.leetcode_id %>";
         </script>
         <script src="/leetcode.js"></script>
 
-        <!-- ✅ CHALLENGE PROGRESS SCRIPT -->
+        <!-- 100 DAYS + 150 DAYS SCRIPT -->
         <script>
             const studentSapId = "<%= student.SAP_ID %>";
 
-            // Fetch Challenge Progress Data
             async function fetchChallengeProgress() {
                 try {
                     const response = await fetch(`/admin/challenge-progress/${studentSapId}`);
@@ -227,52 +268,160 @@
                 }
             }
 
-            // Create Challenge Heatmap (Day 1-100)
             function createChallengeHeatmap(progressArray) {
-                console.log("Creating challenge heatmap with:", progressArray);
+                const tooltip = document.getElementById("challengeTooltip");
+                const gridContainer = document.getElementById('challengeHeatmapGrid');
 
-                // Get completed days as a Set for quick lookup
                 const completedDays = new Set(progressArray.map(p => p.day));
 
-                // Update stats
                 const totalCompleted = completedDays.size;
                 const progressPercent = Math.round((totalCompleted / 100) * 100);
 
                 document.getElementById('challengeCompletedDays').textContent = totalCompleted;
                 document.getElementById('challengeProgressPercent').textContent = progressPercent + '%';
 
-                // Create 100 day cells
-                const gridContainer = document.getElementById('challengeHeatmapGrid');
                 gridContainer.innerHTML = '';
 
                 for (let day = 1; day <= 100; day++) {
                     const cell = document.createElement('div');
                     cell.className = 'challenge-day-cell';
                     cell.textContent = day;
-                    cell.title = `Day ${day}`;
 
-                    // Mark as completed if day exists in progressArray
+                    let completedAtDate = null;
+
                     if (completedDays.has(day)) {
                         cell.classList.add('completed');
 
-                        // Find the completion date
                         const dayData = progressArray.find(p => p.day === day);
-                        if (dayData) {
-                            const date = new Date(dayData.completedAt);
-                            cell.title = `Day ${day} - Completed on ${date.toLocaleDateString()}`;
+                        if (dayData && dayData.completedAt) {
+                            completedAtDate = new Date(dayData.completedAt);
                         }
-                    } else {
-                        cell.title = `Day ${day} - Not completed`;
                     }
+
+                    // Tooltip hover FIXED
+                    cell.addEventListener("mousemove", (e) => {
+                        tooltip.style.display = "block";
+
+                        if (completedAtDate) {
+                            tooltip.innerHTML = `
+                                <div style="color:#60a5fa;font-weight:800;">Day ${day}</div>
+                                <div style="color:#e5e7eb;">Completed on: ${completedAtDate.toDateString()}</div>
+                            `;
+                        } else {
+                            tooltip.innerHTML = `
+                                <div style="color:#9ca3af;font-weight:800;">Day ${day}</div>
+                                <div style="color:#e5e7eb;">Not completed</div>
+                            `;
+                        }
+
+                        const rect = gridContainer.getBoundingClientRect();
+
+                        tooltip.style.left = (e.clientX - rect.left + 40) + "px";
+                        tooltip.style.top = (e.clientY - rect.top - 30) + "px";
+                    });
+
+                    cell.addEventListener("mouseleave", () => {
+                        tooltip.style.display = "none";
+                    });
 
                     gridContainer.appendChild(cell);
                 }
-
-                console.log(`✅ Created ${gridContainer.children.length} day cells`);
             }
 
-            // Fetch data on page load
             fetchChallengeProgress();
+
+            async function fetchChallengeHeatmap150() {
+                try {
+                    const response = await fetch(`/admin/challenge-heatmap150/${studentSapId}`);
+                    const data = await response.json();
+
+                    console.log("✅ 150 Days Heatmap Data:", data);
+                    createHeatmap150(data.challengeProgress || []);
+
+                } catch (error) {
+                    console.error("❌ Error fetching 150 days heatmap:", error);
+                }
+            }
+
+            function createHeatmap150(progressArray) {
+                const heatmap = document.getElementById("ch150Heatmap");
+                const tooltip = document.getElementById("ch150Tooltip");
+
+                heatmap.innerHTML = "";
+
+                const year = new Date().getFullYear();
+                const startDate = new Date(year, 1, 1); // Feb 1
+
+                const countMap = {};
+
+                progressArray.forEach(item => {
+                    if (!item.completedAt) return;
+
+                    const key = new Date(item.completedAt).toISOString().split("T")[0];
+                    countMap[key] = (countMap[key] || 0) + 1;
+                });
+
+                let activeDays = 0;
+                let streak = 0;
+                let maxStreak = 0;
+
+                for (let i = 0; i < 150; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+
+                    const key = currentDate.toISOString().split("T")[0];
+                    const count = countMap[key] || 0;
+
+                    if (count > 0) {
+                        activeDays++;
+                        streak++;
+                        maxStreak = Math.max(maxStreak, streak);
+                    } else {
+                        streak = 0;
+                    }
+
+                    const cell = document.createElement("div");
+                    cell.classList.add("ch150-cell");
+
+                    if (count === 1) cell.classList.add("level-1");
+                    else if (count === 2) cell.classList.add("level-2");
+                    else if (count === 3) cell.classList.add("level-3");
+                    else if (count >= 4) cell.classList.add("level-4");
+
+                    cell.addEventListener("mousemove", (e) => {
+                        tooltip.style.display = "block";
+
+                        const dayName = currentDate.toLocaleString("default", { weekday: "long" });
+                        const formattedDate = currentDate.toDateString();
+
+                        if (count > 0) {
+                            tooltip.innerHTML = `
+                                <div style="color:#ffd166;font-weight:800;">${count} Task(s) Completed</div>
+                                <div>${dayName}, ${formattedDate}</div>
+                            `;
+                        } else {
+                            tooltip.innerHTML = `
+                                <div style="color:#9ca3af;font-weight:800;">No Submission</div>
+                                <div>${dayName}, ${formattedDate}</div>
+                            `;
+                        }
+
+                        tooltip.style.left = (e.pageX + 15) + "px";
+                        tooltip.style.top = (e.pageY - 20) + "px";
+                    });
+
+                    cell.addEventListener("mouseleave", () => {
+                        tooltip.style.display = "none";
+                    });
+
+                    heatmap.appendChild(cell);
+                }
+
+                document.getElementById("ch150ActiveDays").innerText = activeDays;
+                document.getElementById("ch150MaxStreak").innerText = maxStreak;
+            }
+
+            fetchChallengeHeatmap150();
         </script>
 
     <% } %>
