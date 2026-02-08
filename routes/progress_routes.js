@@ -3,6 +3,15 @@ const router = express.Router();
 const User = require("../model/user");
 const isAuthenticated = require("../middleware/auth_middleware");
 
+const loadChallengeData = require("../utils/challengeCache");
+
+router.get("/data", (req, res) => {
+  const data = loadChallengeData();
+  res.json(data);
+});
+
+
+
 // ===================== SAVE/TOGGLE COMPLETION =====================
 router.post("/toggle", isAuthenticated, async (req, res) => {
   try {

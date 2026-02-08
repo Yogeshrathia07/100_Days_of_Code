@@ -4,6 +4,11 @@ const CONFIG = {
   unlockTime: "07:00",
 };
 
+
+// ====================== Optimisation ======================
+let visibleCount = 20;
+const loadMoreCount = 20;
+
 // ====================== GLOBALS ======================
 let challengeData = [];
 let currentFilter = "all";
@@ -334,12 +339,14 @@ function showDescription(day, questionNum) {
   if (!modal || !title || !description) return;
 
   // Get the correct question data based on questionNum
-  const questionData = questionNum === 1 ? dayData.question1 : dayData.question2;
-  
+  const questionData =
+    questionNum === 1 ? dayData.question1 : dayData.question2;
+
   title.textContent = `Day ${day} - Question ${questionNum}: ${questionData.title || questionData.name}`;
-  
+
   // Format the description with proper line breaks
-  const formattedDescription = questionData.description || 'No description available';
+  const formattedDescription =
+    questionData.description || "No description available";
   description.innerHTML = `<pre>${formattedDescription}</pre>`;
 
   modal.style.display = "block";
@@ -448,7 +455,7 @@ function renderDays() {
 // ====================== INIT CHALLENGE PAGE ======================
 async function initChallengePage() {
   try {
-    const response = await fetch("/challenge_syllabus_aligned.json");
+    const response = await fetch("/challenge-api/data");
     challengeData = await response.json();
 
     await loadProgressFromDB();
@@ -496,7 +503,10 @@ function showSolution(day, questionNum) {
     return;
   }
 
-  const solutions = questionNum === 1 ? dayData.solutions.question1 : dayData.solutions.question2;
+  const solutions =
+    questionNum === 1
+      ? dayData.solutions.question1
+      : dayData.solutions.question2;
 
   // Check if this specific question has solutions
   if (!solutions || solutions.length === 0) {
@@ -510,17 +520,18 @@ function showSolution(day, questionNum) {
 
   if (!modal || !title || !content) return;
 
-  const questionTitle = questionNum === 1 ? dayData.question1.title : dayData.question2.name;
+  const questionTitle =
+    questionNum === 1 ? dayData.question1.title : dayData.question2.name;
 
   title.textContent = `Day ${day} - Question ${questionNum}: ${questionTitle} - Solutions`;
 
-  let solutionsHTML = '';
+  let solutionsHTML = "";
 
   solutions.forEach((solution, index) => {
     // Skip editorial type
-    if (solution.type === 'editorial') return;
+    if (solution.type === "editorial") return;
 
-    if (solution.type === 'tutorial') {
+    if (solution.type === "tutorial") {
       solutionsHTML += `<div class="solution-section tutorial">`;
       solutionsHTML += `<div class="solution-type-badge">📚 Tutorial</div>`;
 
@@ -532,9 +543,9 @@ function showSolution(day, questionNum) {
       if (solution.code) {
         // Decode HTML entities
         const decodedCode = solution.code
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&amp;/g, "&")
           .replace(/&quot;/g, '"');
 
         solutionsHTML += `
@@ -556,14 +567,13 @@ function showSolution(day, questionNum) {
       }
 
       solutionsHTML += `</div>`;
-
-    } else if (solution.type === 'video') {
+    } else if (solution.type === "video") {
       // Video links with better design
       solutionsHTML += `<div class="solution-section">`;
       solutionsHTML += `<div class="solution-type-badge">🎥 Video</div>`;
       solutionsHTML += `
         <a href="${solution.link}" target="_blank" class="solution-link">
-          <span class="solution-link-text">${solution.label || 'Watch Video Solution'}</span>
+          <span class="solution-link-text">${solution.label || "Watch Video Solution"}</span>
           <span class="solution-link-arrow">→</span>
         </a>
       `;
@@ -584,20 +594,20 @@ function closeModal() {
 }
 
 // Close modal when clicking outside
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const problemModal = document.getElementById("problemModal");
   const solutionModal = document.getElementById("solutionModal");
-  
+
   if (problemModal) {
-    problemModal.addEventListener('click', (e) => {
+    problemModal.addEventListener("click", (e) => {
       if (e.target === problemModal) {
         closeModal();
       }
     });
   }
-  
+
   if (solutionModal) {
-    solutionModal.addEventListener('click', (e) => {
+    solutionModal.addEventListener("click", (e) => {
       if (e.target === solutionModal) {
         closeSolutionModal();
       }

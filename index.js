@@ -60,7 +60,8 @@ app.get('/challenge', isAuthenticated, (req, res) => {
 //   res.render("admin_login", { error: null });
 // });
 
-
+const challengeRoutes = require("./routes/progress_routes");
+app.use("/challenge-api", challengeRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Server running on port", PORT));
