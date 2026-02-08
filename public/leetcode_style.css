@@ -779,3 +779,10 @@
     height: 26px;
   }
 }
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}

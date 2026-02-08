@@ -4,10 +4,10 @@ const CONFIG = {
   unlockTime: "07:00",
 };
 
-
-// ====================== Optimisation ======================
+// ====================== OPTIMIZATION ======================
 let visibleCount = 20;
 const loadMoreCount = 20;
+let isLoadingMore = false;
 
 // ====================== GLOBALS ======================
 let challengeData = [];
@@ -110,9 +110,7 @@ function updateStats() {
   if (completedDaysEl) completedDaysEl.textContent = completed;
   if (streakDaysEl) streakDaysEl.textContent = streak;
 
-  const progressCompletedDaysEl = document.getElementById(
-    "progressCompletedDays",
-  );
+  const progressCompletedDaysEl = document.getElementById("progressCompletedDays");
   const progressTotalDaysEl = document.getElementById("progressTotalDays");
   const progressFillEl = document.getElementById("progressFill");
 
@@ -124,77 +122,6 @@ function updateStats() {
     progressFillEl.style.width = progressPercent + "%";
   }
 }
-
-// ====================== TOGGLE COMPLETE (SAVE TO DB) ======================
-// async function toggleComplete(day) {
-//   try {
-//     const res = await fetch("/progress/toggle", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ day }),
-//     });
-
-//     const data = await res.json();
-
-//     if (data.success) {
-//       completedDays = data.challengeProgress.map((d) => d.day);
-
-//       updateStats();
-//       renderDays();
-//     } else {
-//       alert("Error saving progress!");
-//     }
-//   } catch (err) {
-//     console.log("Toggle error:", err);
-//     alert("Backend not running!");
-//   }
-// }
-
-// async function toggleComplete(day) {
-
-//   // ====================== CONFIRM POPUP ======================
-//   const confirmText = `Day ${day}`;
-
-//   const userInput = prompt(
-//     `To mark this day as complete, type:\n\n${confirmText}`
-//   );
-
-//   // If user pressed cancel
-//   if (userInput === null) return;
-
-//   // If wrong input
-//   if (userInput.trim().toLowerCase() !== confirmText.toLowerCase()) {
-//     alert("❌ Incorrect text! Please type exactly as shown.");
-//     return;
-//   }
-
-//   // ====================== BACKEND REQUEST ======================
-//   try {
-//     const res = await fetch("/progress/toggle", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ day }),
-//     });
-
-//     const data = await res.json();
-
-//     if (data.success) {
-//       completedDays = data.challengeProgress.map((d) => d.day);
-
-//       updateStats();
-//       renderDays();
-//     } else {
-//       alert("❌ Error saving progress!");
-//     }
-//   } catch (err) {
-//     console.log("Toggle error:", err);
-//     alert("❌ Backend not running!");
-//   }
-// }
 
 // ===================== MODAL VARIABLES =====================
 let selectedDay = null;
@@ -213,7 +140,6 @@ function openCompleteModal(day) {
 
   expectedTextEl.innerText = confirmText;
   inputEl.value = "";
-
   modalEl.style.display = "flex";
 
   setTimeout(() => {
@@ -221,7 +147,7 @@ function openCompleteModal(day) {
   }, 100);
 }
 
-// ===================== CLOSE MODAL =====================
+// ===================== CLOSE COMPLETE MODAL =====================
 function closeCompleteModal() {
   const modalEl = document.getElementById("completeModal");
   if (!modalEl) return;
@@ -243,17 +169,13 @@ async function confirmCompleteDay() {
     return;
   }
 
-  // ✅ store day before closing modal
   const dayToSend = selectedDay;
-
   closeCompleteModal();
 
   try {
     const res = await fetch("/progress/toggle", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ day: dayToSend }),
     });
 
@@ -261,7 +183,6 @@ async function confirmCompleteDay() {
 
     if (data.success) {
       completedDays = data.challengeProgress.map((d) => d.day);
-
       updateStats();
       renderDays();
     } else {
@@ -278,12 +199,10 @@ document.addEventListener("keydown", (e) => {
   const modalEl = document.getElementById("completeModal");
   if (!modalEl) return;
 
-  // Enter key confirms
   if (e.key === "Enter" && modalEl.style.display === "flex") {
     confirmCompleteDay();
   }
 
-  // ESC closes modal
   if (e.key === "Escape" && modalEl.style.display === "flex") {
     closeCompleteModal();
   }
@@ -292,15 +211,13 @@ document.addEventListener("keydown", (e) => {
 // ====================== FILTER ======================
 function setFilter(filter) {
   currentFilter = filter;
-    visibleCount = 20;
+  visibleCount = 20;
 
-  document
-    .querySelectorAll(".filter-btn")
-    .forEach((btn) => btn.classList.remove("active"));
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
 
-  const activeBtn = document.querySelector(
-    `[onclick="setFilter('${filter}')"]`,
-  );
+  const activeBtn = document.querySelector(`[onclick="setFilter('${filter}')"]`);
   if (activeBtn) activeBtn.classList.add("active");
 
   renderDays();
@@ -308,7 +225,6 @@ function setFilter(filter) {
 
 // ====================== SEARCH ======================
 let searchTimeout;
-
 function searchDays() {
   clearTimeout(searchTimeout);
 
@@ -317,23 +233,6 @@ function searchDays() {
     renderDays();
   }, 300);
 }
-
-// ====================== SHOW DESCRIPTION MODAL ======================
-// function showDescription(day, questionNum) {
-//   const dayData = challengeData.find((d) => d.day === day);
-//   if (!dayData) return;
-
-//   const modal = document.getElementById("problemModal");
-//   const title = document.getElementById("modalTitle");
-//   const description = document.getElementById("modalDescription");
-
-//   if (!modal || !title || !description) return;
-
-//   title.textContent = `Day ${day} - Question ${questionNum}: ${dayData.question1.title}`;
-//   description.innerHTML = `<pre>${dayData.question1.description}</pre>`;
-
-//   modal.style.display = "block";
-// }
 
 // ====================== SHOW DESCRIPTION MODAL ======================
 function showDescription(day, questionNum) {
@@ -346,25 +245,25 @@ function showDescription(day, questionNum) {
 
   if (!modal || !title || !description) return;
 
-  // Get the correct question data based on questionNum
-  const questionData =
-    questionNum === 1 ? dayData.question1 : dayData.question2;
+  const questionData = questionNum === 1 ? dayData.question1 : dayData.question2;
 
-  title.textContent = `Day ${day} - Question ${questionNum}: ${questionData.title || questionData.name}`;
+  title.textContent = `Day ${day} - Question ${questionNum}: ${
+    questionData.title || questionData.name
+  }`;
 
-  // Format the description with proper line breaks
-  const formattedDescription =
-    questionData.description || "No description available";
+  const formattedDescription = questionData.description || "No description available";
   description.innerHTML = `<pre>${formattedDescription}</pre>`;
 
   modal.style.display = "block";
 }
 
-function closeModal() {
+// ====================== CLOSE PROBLEM MODAL ======================
+function closeProblemModal() {
   const modal = document.getElementById("problemModal");
   if (modal) modal.style.display = "none";
 }
 
+// ====================== CLOSE SOLUTION MODAL ======================
 function closeSolutionModal() {
   const modal = document.getElementById("solutionModal");
   if (modal) modal.style.display = "none";
@@ -402,6 +301,7 @@ function renderDays() {
 
       return `
         <div class="day-card ${isCompleted ? "completed" : ""}">
+          
           <div class="day-header">
             <div class="day-number">Day ${day.day}</div>
             <div class="unit-badge">${day.unit.replace("Unit ", "")}</div>
@@ -412,14 +312,34 @@ function renderDays() {
           </div>
 
           <div class="question">
-            <div class="question-name">${day.question1.title}</div>
-            <button class="solve-btn" onclick="showDescription(${day.day}, 1)">View Problem →</button>
+          <div class="question-name">${day.question1.title}</div>
+
+          <div class="btn-row">
+            <button class="solve-btn" onclick="showDescription(${day.day}, 1)">
+              View Problem →
+            </button>
+
+            <button class="solution-btn" onclick="showSolution(${day.day}, 1)">
+              View Solution 💡
+            </button>
           </div>
+        </div>
+
 
           <div class="question">
             <div class="question-name">${day.question2.name}</div>
-            <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
+
+            <div class="btn-row">
+              <a href="${day.question2.link}" target="_blank" class="solve-btn">
+                Solve Problem →
+              </a>
+
+              <button class="solution-btn" onclick="showSolution(${day.day}, 2)">
+                View Solution 🛠️
+              </button>
+            </div>
           </div>
+
 
           <div class="complete-btn ${isCompleted ? "completed" : ""}" 
             onclick="openCompleteModal(${day.day})">
@@ -430,7 +350,6 @@ function renderDays() {
     })
     .join("");
 
-  // Add loader message
   if (visibleCount < filtered.length) {
     grid.innerHTML += `
       <div id="loadMoreMsg" style="text-align:center;color:#9ca3af;padding:25px;font-weight:700;">
@@ -439,7 +358,6 @@ function renderDays() {
     `;
   }
 }
-
 
 // ====================== INIT CHALLENGE PAGE ======================
 async function initChallengePage() {
@@ -463,6 +381,25 @@ async function initChallengePage() {
   }
 }
 
+// ====================== SCROLL LOAD MORE (FIXED) ======================
+window.addEventListener("scroll", () => {
+  if (isLoadingMore) return;
+
+  const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const fullHeight = document.body.scrollHeight;
+
+  if (scrollTop + windowHeight >= fullHeight - 200) {
+    isLoadingMore = true;
+
+    setTimeout(() => {
+      visibleCount += loadMoreCount;
+      renderDays();
+      isLoadingMore = false;
+    }, 300);
+  }
+});
+
 // ====================== PAGE DETECTION ======================
 window.addEventListener("DOMContentLoaded", () => {
   updateTimer();
@@ -470,46 +407,26 @@ window.addEventListener("DOMContentLoaded", () => {
   setInterval(updateTimer, 1000);
   setInterval(updateStats, 30000);
 
-  // Challenge Page
   if (document.getElementById("daysGrid")) {
     initChallengePage();
-  }
-  // Dashboard Page (stats only)
-  else {
+  } else {
     loadProgressFromDB().then(() => updateStats());
   }
 });
 
-window.addEventListener("scroll", () => {
-  const scrollTop = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const fullHeight = document.body.scrollHeight;
-
-  if (scrollTop + windowHeight >= fullHeight - 200) {
-    visibleCount += loadMoreCount;
-    renderDays();
-  }
-});
-
-
-// ====================== SHOW SOLUTION MODAL ======================
 // ====================== SHOW SOLUTION MODAL ======================
 function showSolution(day, questionNum) {
   const dayData = challengeData.find((d) => d.day === day);
   if (!dayData) return;
 
-  // Check if solutions exist
   if (!dayData.solutions) {
     alert("⚠️ Solutions not available yet!");
     return;
   }
 
   const solutions =
-    questionNum === 1
-      ? dayData.solutions.question1
-      : dayData.solutions.question2;
+    questionNum === 1 ? dayData.solutions.question1 : dayData.solutions.question2;
 
-  // Check if this specific question has solutions
   if (!solutions || solutions.length === 0) {
     alert("⚠️ Solution for this question is not available yet!");
     return;
@@ -524,61 +441,50 @@ function showSolution(day, questionNum) {
   const questionTitle =
     questionNum === 1 ? dayData.question1.title : dayData.question2.name;
 
-  title.textContent = `Day ${day} - Question ${questionNum}: ${questionTitle} - Solutions`;
+  title.textContent = `Day ${day} - Question ${questionNum}: ${questionTitle}`;
 
   let solutionsHTML = "";
 
-  solutions.forEach((solution, index) => {
-    // Skip editorial type
+  solutions.forEach((solution) => {
     if (solution.type === "editorial") return;
 
     if (solution.type === "tutorial") {
-      solutionsHTML += `<div class="solution-section tutorial">`;
-      solutionsHTML += `<div class="solution-type-badge">📚 Tutorial</div>`;
-
-      // Tutorial with code
-      if (solution.explanation) {
-        solutionsHTML += `<div class="solution-explanation">${solution.explanation}</div>`;
-      }
-
-      if (solution.code) {
-        // Decode HTML entities
-        const decodedCode = solution.code
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .replace(/&amp;/g, "&")
-          .replace(/&quot;/g, '"');
-
-        solutionsHTML += `
-          <div class="solution-code">
-            <pre>${decodedCode}</pre>
-          </div>
-        `;
-      }
-
-      if (solution.timeComplexity || solution.spaceComplexity) {
-        solutionsHTML += `<div class="complexity-info">`;
-        if (solution.timeComplexity) {
-          solutionsHTML += `<div class="complexity-item">⏱️ Time: ${solution.timeComplexity}</div>`;
-        }
-        if (solution.spaceComplexity) {
-          solutionsHTML += `<div class="complexity-item">💾 Space: ${solution.spaceComplexity}</div>`;
-        }
-        solutionsHTML += `</div>`;
-      }
-
-      solutionsHTML += `</div>`;
-    } else if (solution.type === "video") {
-      // Video links with better design
-      solutionsHTML += `<div class="solution-section">`;
-      solutionsHTML += `<div class="solution-type-badge">🎥 Video</div>`;
       solutionsHTML += `
-        <a href="${solution.link}" target="_blank" class="solution-link">
-          <span class="solution-link-text">${solution.label || "Watch Video Solution"}</span>
-          <span class="solution-link-arrow">→</span>
-        </a>
+        <div class="solution-section tutorial">
+          <div class="solution-type-badge">📚 Tutorial</div>
+          <div class="solution-explanation">${solution.explanation || ""}</div>
+
+          ${
+            solution.code
+              ? `<div class="solution-code"><pre>${solution.code}</pre></div>`
+              : ""
+          }
+
+          <div class="complexity-info">
+            ${
+              solution.timeComplexity
+                ? `<div class="complexity-item">⏱️ Time: ${solution.timeComplexity}</div>`
+                : ""
+            }
+            ${
+              solution.spaceComplexity
+                ? `<div class="complexity-item">💾 Space: ${solution.spaceComplexity}</div>`
+                : ""
+            }
+          </div>
+        </div>
       `;
-      solutionsHTML += `</div>`;
+    }
+
+    if (solution.type === "video") {
+      solutionsHTML += `
+        <div class="solution-section">
+          <div class="solution-type-badge">🎥 Video</div>
+          <a href="${solution.link}" target="_blank" class="solution-link">
+            ${solution.label || "Watch Video Solution"} →
+          </a>
+        </div>
+      `;
     }
   });
 
@@ -587,14 +493,7 @@ function showSolution(day, questionNum) {
   document.body.style.overflow = "hidden";
 }
 
-function closeModal() {
-  const modal = document.getElementById("problemModal");
-  if (modal) {
-    modal.style.display = "none";
-  }
-}
-
-// Close modal when clicking outside
+// ====================== CLOSE MODALS ON OUTSIDE CLICK ======================
 document.addEventListener("DOMContentLoaded", () => {
   const problemModal = document.getElementById("problemModal");
   const solutionModal = document.getElementById("solutionModal");
@@ -602,7 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (problemModal) {
     problemModal.addEventListener("click", (e) => {
       if (e.target === problemModal) {
-        closeModal();
+        closeProblemModal();
       }
     });
   }
