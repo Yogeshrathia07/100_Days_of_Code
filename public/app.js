@@ -292,6 +292,7 @@ document.addEventListener("keydown", (e) => {
 // ====================== FILTER ======================
 function setFilter(filter) {
   currentFilter = filter;
+    visibleCount = 20;
 
   document
     .querySelectorAll(".filter-btn")
@@ -306,8 +307,15 @@ function setFilter(filter) {
 }
 
 // ====================== SEARCH ======================
+let searchTimeout;
+
 function searchDays() {
-  renderDays();
+  clearTimeout(searchTimeout);
+
+  searchTimeout = setTimeout(() => {
+    visibleCount = 20;
+    renderDays();
+  }, 300);
 }
 
 // ====================== SHOW DESCRIPTION MODAL ======================
@@ -367,11 +375,11 @@ function closeSolutionModal() {
 function renderDays() {
   const grid = document.getElementById("daysGrid");
   const searchBox = document.getElementById("searchBox");
-
   if (!grid || !searchBox) return;
 
   const searchTerm = searchBox.value.toLowerCase();
   const maxUnlocked = getUnlockedDay();
+  const completedSet = new Set(completedDays);
 
   const filtered = challengeData.filter((day) => {
     const matchesFilter = currentFilter === "all" || day.unit === currentFilter;
@@ -383,29 +391,17 @@ function renderDays() {
       day.question2.name.toLowerCase().includes(searchTerm) ||
       day.topics.some((t) => t.toLowerCase().includes(searchTerm));
 
-    return matchesFilter && matchesSearch;
+    return matchesFilter && matchesSearch && day.day <= maxUnlocked;
   });
 
-  grid.innerHTML = filtered
+  const sliced = filtered.slice(0, visibleCount);
+
+  grid.innerHTML = sliced
     .map((day) => {
-      const isCompleted = completedDays.includes(day.day);
-      const isLocked = day.day > maxUnlocked;
-      const isToday = day.day === maxUnlocked && maxUnlocked > 0;
-
-      if (isLocked) return "";
-
-      let statusBadge = "";
-      if (isToday)
-        statusBadge = `<span class="unlock-badge">🔥 Today's Challenge</span>`;
-      else if (day.day < maxUnlocked)
-        statusBadge = `<span class="unlock-badge">✓ Unlocked</span>`;
+      const isCompleted = completedSet.has(day.day);
 
       return `
-        <div class="day-card ${isCompleted ? "completed" : ""} ${
-          isToday ? "today" : ""
-        }">
-          ${statusBadge}
-
+        <div class="day-card ${isCompleted ? "completed" : ""}">
           <div class="day-header">
             <div class="day-number">Day ${day.day}</div>
             <div class="unit-badge">${day.unit.replace("Unit ", "")}</div>
@@ -416,41 +412,34 @@ function renderDays() {
           </div>
 
           <div class="question">
-          <div class="question-header">
-            <span class="question-num">Question 1 - C Programming</span>
-            <span class="difficulty easy">Practice</span>
-          </div>
-          <div class="question-name">${day.question1.title}</div>
-          <div class="question-buttons">
+            <div class="question-name">${day.question1.title}</div>
             <button class="solve-btn" onclick="showDescription(${day.day}, 1)">View Problem →</button>
-            <button class="solution-btn" onclick="showSolution(${day.day}, 1)">View Solution 💡</button>
           </div>
-        </div>
 
-        <div class="question">
-          <div class="question-header">
-            <span class="question-num">Question 2</span>
-            <span class="difficulty ${day.question2.difficulty.toLowerCase()}">${day.question2.difficulty}</span>
-          </div>
-          <div class="question-name">${day.question2.name}</div>
-          <div class="question-buttons">
+          <div class="question">
+            <div class="question-name">${day.question2.name}</div>
             <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
-            <button class="solution-btn" onclick="showSolution(${day.day}, 2)">View Solution 💡</button>
           </div>
-        </div>
-
-          
 
           <div class="complete-btn ${isCompleted ? "completed" : ""}" 
-              onclick="openCompleteModal(${day.day})">
+            onclick="openCompleteModal(${day.day})">
             <span>${isCompleted ? "Completed" : "Mark as Complete"}</span>
           </div>
-
         </div>
       `;
     })
     .join("");
+
+  // Add loader message
+  if (visibleCount < filtered.length) {
+    grid.innerHTML += `
+      <div id="loadMoreMsg" style="text-align:center;color:#9ca3af;padding:25px;font-weight:700;">
+        ⏳ Scroll down to load more...
+      </div>
+    `;
+  }
 }
+
 
 // ====================== INIT CHALLENGE PAGE ======================
 async function initChallengePage() {
@@ -490,6 +479,18 @@ window.addEventListener("DOMContentLoaded", () => {
     loadProgressFromDB().then(() => updateStats());
   }
 });
+
+window.addEventListener("scroll", () => {
+  const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const fullHeight = document.body.scrollHeight;
+
+  if (scrollTop + windowHeight >= fullHeight - 200) {
+    visibleCount += loadMoreCount;
+    renderDays();
+  }
+});
+
 
 // ====================== SHOW SOLUTION MODAL ======================
 // ====================== SHOW SOLUTION MODAL ======================
