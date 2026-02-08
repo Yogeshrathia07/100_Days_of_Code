@@ -105,7 +105,9 @@ function updateStats() {
   if (completedDaysEl) completedDaysEl.textContent = completed;
   if (streakDaysEl) streakDaysEl.textContent = streak;
 
-  const progressCompletedDaysEl = document.getElementById("progressCompletedDays");
+  const progressCompletedDaysEl = document.getElementById(
+    "progressCompletedDays",
+  );
   const progressTotalDaysEl = document.getElementById("progressTotalDays");
   const progressFillEl = document.getElementById("progressFill");
 
@@ -144,7 +146,6 @@ function updateStats() {
 //     alert("Backend not running!");
 //   }
 // }
-
 
 // async function toggleComplete(day) {
 
@@ -189,7 +190,6 @@ function updateStats() {
 //     alert("❌ Backend not running!");
 //   }
 // }
-
 
 // ===================== MODAL VARIABLES =====================
 let selectedDay = null;
@@ -284,9 +284,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-
-
-
 // ====================== FILTER ======================
 function setFilter(filter) {
   currentFilter = filter;
@@ -295,7 +292,9 @@ function setFilter(filter) {
     .querySelectorAll(".filter-btn")
     .forEach((btn) => btn.classList.remove("active"));
 
-  const activeBtn = document.querySelector(`[onclick="setFilter('${filter}')"]`);
+  const activeBtn = document.querySelector(
+    `[onclick="setFilter('${filter}')"]`,
+  );
   if (activeBtn) activeBtn.classList.add("active");
 
   renderDays();
@@ -305,6 +304,23 @@ function setFilter(filter) {
 function searchDays() {
   renderDays();
 }
+
+// ====================== SHOW DESCRIPTION MODAL ======================
+// function showDescription(day, questionNum) {
+//   const dayData = challengeData.find((d) => d.day === day);
+//   if (!dayData) return;
+
+//   const modal = document.getElementById("problemModal");
+//   const title = document.getElementById("modalTitle");
+//   const description = document.getElementById("modalDescription");
+
+//   if (!modal || !title || !description) return;
+
+//   title.textContent = `Day ${day} - Question ${questionNum}: ${dayData.question1.title}`;
+//   description.innerHTML = `<pre>${dayData.question1.description}</pre>`;
+
+//   modal.style.display = "block";
+// }
 
 // ====================== SHOW DESCRIPTION MODAL ======================
 function showDescription(day, questionNum) {
@@ -317,8 +333,14 @@ function showDescription(day, questionNum) {
 
   if (!modal || !title || !description) return;
 
-  title.textContent = `Day ${day} - Question ${questionNum}: ${dayData.question1.title}`;
-  description.innerHTML = `<pre>${dayData.question1.description}</pre>`;
+  // Get the correct question data based on questionNum
+  const questionData = questionNum === 1 ? dayData.question1 : dayData.question2;
+  
+  title.textContent = `Day ${day} - Question ${questionNum}: ${questionData.title || questionData.name}`;
+  
+  // Format the description with proper line breaks
+  const formattedDescription = questionData.description || 'No description available';
+  description.innerHTML = `<pre>${formattedDescription}</pre>`;
 
   modal.style.display = "block";
 }
@@ -387,22 +409,28 @@ function renderDays() {
           </div>
 
           <div class="question">
-            <div class="question-header">
-              <span class="question-num">Question 1 - C Programming</span>
-              <span class="difficulty easy">Practice</span>
-            </div>
-            <div class="question-name">${day.question1.title}</div>
+          <div class="question-header">
+            <span class="question-num">Question 1 - C Programming</span>
+            <span class="difficulty easy">Practice</span>
+          </div>
+          <div class="question-name">${day.question1.title}</div>
+          <div class="question-buttons">
             <button class="solve-btn" onclick="showDescription(${day.day}, 1)">View Problem →</button>
+            <button class="solution-btn" onclick="showSolution(${day.day}, 1)">View Solution 💡</button>
           </div>
+        </div>
 
-          <div class="question">
-            <div class="question-header">
-              <span class="question-num">Question 2</span>
-              <span class="difficulty ${day.question2.difficulty.toLowerCase()}">${day.question2.difficulty}</span>
-            </div>
-            <div class="question-name">${day.question2.name}</div>
-            <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
+        <div class="question">
+          <div class="question-header">
+            <span class="question-num">Question 2</span>
+            <span class="difficulty ${day.question2.difficulty.toLowerCase()}">${day.question2.difficulty}</span>
           </div>
+          <div class="question-name">${day.question2.name}</div>
+          <div class="question-buttons">
+            <a href="${day.question2.link}" target="_blank" class="solve-btn">Solve Problem →</a>
+            <button class="solution-btn" onclick="showSolution(${day.day}, 2)">View Solution 💡</button>
+          </div>
+        </div>
 
           
 
@@ -453,5 +481,126 @@ window.addEventListener("DOMContentLoaded", () => {
   // Dashboard Page (stats only)
   else {
     loadProgressFromDB().then(() => updateStats());
+  }
+});
+
+// ====================== SHOW SOLUTION MODAL ======================
+// ====================== SHOW SOLUTION MODAL ======================
+function showSolution(day, questionNum) {
+  const dayData = challengeData.find((d) => d.day === day);
+  if (!dayData) return;
+
+  // Check if solutions exist
+  if (!dayData.solutions) {
+    alert("⚠️ Solutions not available yet!");
+    return;
+  }
+
+  const solutions = questionNum === 1 ? dayData.solutions.question1 : dayData.solutions.question2;
+
+  // Check if this specific question has solutions
+  if (!solutions || solutions.length === 0) {
+    alert("⚠️ Solution for this question is not available yet!");
+    return;
+  }
+
+  const modal = document.getElementById("solutionModal");
+  const title = document.getElementById("solutionModalTitle");
+  const content = document.getElementById("solutionModalContent");
+
+  if (!modal || !title || !content) return;
+
+  const questionTitle = questionNum === 1 ? dayData.question1.title : dayData.question2.name;
+
+  title.textContent = `Day ${day} - Question ${questionNum}: ${questionTitle} - Solutions`;
+
+  let solutionsHTML = '';
+
+  solutions.forEach((solution, index) => {
+    // Skip editorial type
+    if (solution.type === 'editorial') return;
+
+    if (solution.type === 'tutorial') {
+      solutionsHTML += `<div class="solution-section tutorial">`;
+      solutionsHTML += `<div class="solution-type-badge">📚 Tutorial</div>`;
+
+      // Tutorial with code
+      if (solution.explanation) {
+        solutionsHTML += `<div class="solution-explanation">${solution.explanation}</div>`;
+      }
+
+      if (solution.code) {
+        // Decode HTML entities
+        const decodedCode = solution.code
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"');
+
+        solutionsHTML += `
+          <div class="solution-code">
+            <pre>${decodedCode}</pre>
+          </div>
+        `;
+      }
+
+      if (solution.timeComplexity || solution.spaceComplexity) {
+        solutionsHTML += `<div class="complexity-info">`;
+        if (solution.timeComplexity) {
+          solutionsHTML += `<div class="complexity-item">⏱️ Time: ${solution.timeComplexity}</div>`;
+        }
+        if (solution.spaceComplexity) {
+          solutionsHTML += `<div class="complexity-item">💾 Space: ${solution.spaceComplexity}</div>`;
+        }
+        solutionsHTML += `</div>`;
+      }
+
+      solutionsHTML += `</div>`;
+
+    } else if (solution.type === 'video') {
+      // Video links with better design
+      solutionsHTML += `<div class="solution-section">`;
+      solutionsHTML += `<div class="solution-type-badge">🎥 Video</div>`;
+      solutionsHTML += `
+        <a href="${solution.link}" target="_blank" class="solution-link">
+          <span class="solution-link-text">${solution.label || 'Watch Video Solution'}</span>
+          <span class="solution-link-arrow">→</span>
+        </a>
+      `;
+      solutionsHTML += `</div>`;
+    }
+  });
+
+  content.innerHTML = solutionsHTML;
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  const modal = document.getElementById("problemModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', () => {
+  const problemModal = document.getElementById("problemModal");
+  const solutionModal = document.getElementById("solutionModal");
+  
+  if (problemModal) {
+    problemModal.addEventListener('click', (e) => {
+      if (e.target === problemModal) {
+        closeModal();
+      }
+    });
+  }
+  
+  if (solutionModal) {
+    solutionModal.addEventListener('click', (e) => {
+      if (e.target === solutionModal) {
+        closeSolutionModal();
+      }
+    });
   }
 });
