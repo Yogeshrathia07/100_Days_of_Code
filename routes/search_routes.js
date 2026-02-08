@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../model/user");
+const isAdmin = require("../middleware/admin_middleware");
 
 // Search page
-router.get("/search", (req, res) => {
+router.get("/search",isAdmin, (req, res) => {
   res.render("search_student", { student: null, error: null });
 });
 
 // Search by SAP ID
-router.post("/search", async (req, res) => {
+router.post("/search", isAdmin, async (req, res) => {
   const { sapid } = req.body;
 
   const student = await User.findOne({ SAP_ID: sapid });
@@ -31,7 +32,7 @@ router.post("/search", async (req, res) => {
 });
 
 // ✅ NEW: API to fetch challenge progress data
-router.get("/challenge-progress/:sapid", async (req, res) => {
+router.get("/challenge-progress/:sapid", isAdmin, async (req, res) => {
   try {
     const student = await User.findOne({ SAP_ID: req.params.sapid });
     
@@ -48,7 +49,7 @@ router.get("/challenge-progress/:sapid", async (req, res) => {
   }
 });
 
-router.get("/challenge-heatmap150/:sapid", async (req, res) => {
+router.get("/challenge-heatmap150/:sapid", isAdmin, async (req, res) => {
   try {
     const sapid = req.params.sapid;
 
@@ -67,6 +68,27 @@ router.get("/challenge-heatmap150/:sapid", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+// -------------------------------- Admin Routes ----------------------------
+router.post("/admin-login", (req, res) => {
+  const { password } = req.body;
+
+  if (password === process.env.ADMIN_PASSWORD) {
+    // console.log("Admin logged in successfully");
+    res.cookie("admin", "true");
+    return res.redirect("/admin/search");
+  }
+
+  res.render("admin_login", { error: "Wrong Admin Password" });
+});
+
+router.get("/admin-logout", (req, res) => {
+  res.clearCookie("admin");
+  res.redirect("/");
+});
+
 
 
 module.exports = router;
