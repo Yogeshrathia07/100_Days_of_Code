@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile | 100 Days Challenge</title>
+  <link rel="stylesheet" href="/auth.css">
+</head>
+
+<body>
+  <style>
+    .auth-container h2 {
+      text-align: center;
+    }
+
+    .auth-container form {
+      text-align: left;
+    }
+  </style>
+
+  <div class="auth-container">
+    <h2>Edit Profile</h2>
+
+    <% if(error) { %>
+      <p style="color:red; font-weight:bold;">
+        <%= error %>
+      </p>
+      <% } %>
+
+        <form id="editProfileForm" method="POST" action="/auth/edit-profile">
+
+          <!-- SAP ID -->
+          <label style="color:white; font-weight:600;">SAP ID</label>
+          <input type="text" id="SAP_ID" name="SAP_ID" placeholder="Enter SAP ID (8 digits)" maxlength="8" required
+            value="<%= user.SAP_ID ? user.SAP_ID : '' %>">
+
+          <!-- Leetcode ID -->
+          <label style="color:white; font-weight:600;">LeetCode Username</label>
+          <input type="text" id="leetcode_id" name="leetcode_id" placeholder="Enter LeetCode Username" required
+            value="<%= user.leetcode_id ? user.leetcode_id : '' %>">
+
+          <p id="leetcodeStatus" style="font-size: 13px; margin-top: -8px; margin-bottom: 10px;"></p>
+
+          <button type="submit">Update Profile</button>
+        </form>
+
+        <p class="link-text">
+          Back to Dashboard? <a href="/">Go Home</a>
+        </p>
+
+        <p id="msg"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("editProfileForm");
+    const msg = document.getElementById("msg");
+
+    const leetcodeInput = document.getElementById("leetcode_id");
+    const leetcodeStatus = document.getElementById("leetcodeStatus");
+
+    let timeout = null;
+    let isLeetcodeValid = true;
+
+    // ======================= REAL TIME LEETCODE CHECK =======================
+    leetcodeInput.addEventListener("input", () => {
+      clearTimeout(timeout);
+
+      const username = leetcodeInput.value.trim();
+
+      if (username === "") {
+        leetcodeStatus.innerText = "";
+        isLeetcodeValid = false;
+        return;
+      }
+
+      leetcodeStatus.style.color = "yellow";
+      leetcodeStatus.innerText = "Checking LeetCode username...";
+      isLeetcodeValid = false;
+
+      timeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`/leetcode/check/${username}`);
+          const data = await res.json();
+
+          if (data.valid) {
+            isLeetcodeValid = true;
+            leetcodeStatus.style.color = "lightgreen";
+            leetcodeStatus.innerText = "✅ Valid LeetCode username";
+          } else {
+            isLeetcodeValid = false;
+            leetcodeStatus.style.color = "red";
+            leetcodeStatus.innerText = "❌ Invalid LeetCode username";
+          }
+
+        } catch (error) {
+          isLeetcodeValid = false;
+          leetcodeStatus.style.color = "red";
+          leetcodeStatus.innerText = "❌ Error checking username";
+        }
+      }, 800);
+    });
+
+
+    // ======================= FORM SUBMIT VALIDATION =======================
+    form.addEventListener("submit", (e) => {
+      const SAP_ID = document.getElementById("SAP_ID").value.trim();
+      const leetcode_id = document.getElementById("leetcode_id").value.trim();
+
+      // SAP validation
+      if (!/^\d{8}$/.test(SAP_ID)) {
+        e.preventDefault();
+        msg.style.color = "red";
+        msg.innerText = "❌ SAP ID must be exactly 8 digits!";
+        return;
+      }
+
+      // Leetcode validation
+      if (!isLeetcodeValid) {
+        e.preventDefault();
+        msg.style.color = "red";
+        msg.innerText = "❌ Please enter a valid LeetCode username!";
+        return;
+      }
+
+      msg.style.color = "yellow";
+      msg.innerText = "Updating profile...";
+    });
+  </script>
+
+</body>
+
+</html>

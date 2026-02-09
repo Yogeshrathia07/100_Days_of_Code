@@ -107,4 +107,65 @@ router.get("/logout", (req, res) => {
   });
 });
 
+
+router.get("/edit-profile", (req, res) => {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    return res.redirect("/auth/microsoft");
+  }
+
+  res.render("edit_profile", { user: req.user, error: null });
+});
+
+router.post("/edit-profile", async (req, res) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      return res.redirect("/auth/microsoft");
+    }
+
+    const { SAP_ID, leetcode_id } = req.body;
+
+    // SAP validation
+    if (!/^\d{8}$/.test(SAP_ID)) {
+      return res.render("edit_profile", {
+        user: req.user,
+        error: "SAP ID must be exactly 8 digits!",
+      });
+    }
+
+    // check SAP already used
+    const existingSAP = await User.findOne({ SAP_ID });
+    if (existingSAP && existingSAP.email !== req.user.email) {
+      return res.render("edit_profile", {
+        user: req.user,
+        error: "This SAP ID is already used by another student!",
+      });
+    }
+
+    // check Leetcode already used
+    const existingLeet = await User.findOne({ leetcode_id });
+    if (existingLeet && existingLeet.email !== req.user.email) {
+      return res.render("edit_profile", {
+        user: req.user,
+        error: "This LeetCode ID is already used!",
+      });
+    }
+
+    await User.findOneAndUpdate(
+      { email: req.user.email },
+      { SAP_ID, leetcode_id },
+      { new: true }
+    );
+
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    res.render("edit_profile", {
+      user: req.user,
+      error: "Something went wrong!",
+    });
+  }
+});
+
+
+
 module.exports = router;
