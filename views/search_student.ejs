@@ -51,20 +51,45 @@
         <div class="student-profile-card">
 
             <div class="student-profile-box">
-                <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+
+                <img id="leetcodeAvatar"
+                    src="<%= student.avatar ? student.avatar : 'https://cdn-icons-png.flaticon.com/512/149/149071.png' %>"
+                    alt="avatar"
+                    onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
 
                 <div class="student-profile-info">
-                    <h3>Name: <span>
-                            <%= student.name %>
-                        </span></h3>
-                    <p><b>SAP ID:</b> <span>
-                            <%= student.SAP_ID %>
-                        </span></p>
-                    <p><b>LeetCode ID:</b> <span id="leetcodeUsername">
-                            <%= student.leetcode_id %>
-                        </span></p>
+
+                    <h3>
+                        Name:
+                        <span>
+                            <%= student.name ? student.name : "Unknown Student" %>
+                        </span>
+                    </h3>
+
+                    
+                    <p>
+                        <b>LeetCode Name:</b>
+                        <span id="leetcodeDisplayName">Loading...</span>
+                    </p>
+                    
+                    <p>
+                        <b>LeetCode ID:</b>
+                        <span id="leetcodeUsername">
+                            @<%= student.leetcode_id ? student.leetcode_id : "Not Provided" %>
+                        </span>
+                    </p>
+                    
+                    <p>
+                        <b>SAP ID:</b>
+                        <span>
+                            <%= student.SAP_ID ? student.SAP_ID : "Not Provided" %>
+                        </span>
+                    </p>
                 </div>
+                
             </div>
+
+
 
             <div class="divider-line"></div>
 

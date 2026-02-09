@@ -14,23 +14,35 @@ passport.use(
       allowHttpForRedirectUrl: true,
       scope: ["profile", "email", "openid"],
     },
+
     async (iss, sub, profile, accessToken, refreshToken, done) => {
       try {
+        // ✅ get email from microsoft
         const email =
-          profile._json.preferred_username ||
-          profile._json.email;
+          profile._json.email || profile._json.preferred_username;
 
-        if (!email) return done(null, false);
+        if (!email) {
+          return done(null, false);
+        }
 
+        // ✅ Restrict login only for UPES domain
+        if (!email.endsWith("upes.ac.in")) {
+          console.log("❌ Not allowed email:", email);
+          return done(null, false);
+        }
+
+        const name = profile.displayName;
+
+        // ✅ find user in DB
         let user = await User.findOne({ email });
 
+        // ✅ create user if not exists
         if (!user) {
           user = await User.create({
-            name: profile.displayName,
-            email: email,
+            name,
+            email,
             SAP_ID: null,
             leetcode_id: null,
-            password: null,
           });
         }
 
@@ -42,11 +54,17 @@ passport.use(
   )
 );
 
+// ================= SESSION STORE =================
 passport.serializeUser((user, done) => {
   done(null, user._id);
 });
 
+// ================= SESSION FETCH =================
 passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-  done(null, user);
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });

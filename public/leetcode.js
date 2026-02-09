@@ -318,38 +318,40 @@ function loadLeetcodeCache(username) {
 
 function updateLeetcodeUI(data) {
 
-  // -------------------- Update Profile --------------------
   const avatar = document.getElementById("leetcodeAvatar");
-  const name = document.getElementById("leetcodeName");
+  const displayName = document.getElementById("leetcodeDisplayName");
   const uname = document.getElementById("leetcodeUsername");
 
-  if (avatar) avatar.src = data.avatar;
-
-  if (name) {
-    name.innerText = data.realName
-      ? "Hello, " + data.realName
-      : "LeetCode Dashboard";
+  if (avatar) {
+    avatar.src = data.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    avatar.onerror = function () {
+      this.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    };
   }
 
-  if (uname) uname.innerText = "@" + data.username;
+  if (displayName) {
+    displayName.innerText = data.realName || data.username || "LeetCode User";
+  }
 
+  if (uname) {
+    uname.innerText = "@" + (data.username || "username");
+  }
 
-  // -------------------- Update Progress Chart --------------------
+  // chart
   if (document.getElementById("progressChart")) {
     showLeetStats(data.submitStats);
   }
 
-  // -------------------- Update Badges --------------------
+  // badges
   if (document.getElementById("badgeSection")) {
     showBadges(data.badges);
   }
 
-  // -------------------- Update Heatmap --------------------
+  // heatmap
   if (document.getElementById("heatmap")) {
     generateHeatmap(data.calendar);
   }
 }
-
 
 
 // ==========================================================

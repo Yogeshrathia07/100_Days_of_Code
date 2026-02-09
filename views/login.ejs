@@ -13,56 +13,21 @@
   <div class="auth-container">
     <h2>Login</h2>
 
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Enter Email" required>
-      <input type="password" id="password" placeholder="Enter Password" required>
-      <button type="submit">Login</button>
-    </form>
-    <a href="/auth/microsoft">
-      <button type="button">Login with Microsoft</button>
-    </a>
+    <!-- ✅ Microsoft Login Button -->
+    <a href="/auth/microsoft" style="text-decoration: none;">
+  <button type="button" style="width:100%;">Login with Student ID</button>
+</a>
 
-
-    <p class="link-text">
-      Don’t have an account? <a href="/register">Register</a>
-    </p>
 
     <hr>
 
+    <!-- ✅ Faculty Dashboard -->
     <div class="faculty-section">
-      <!-- <p class="faculty-text">Are you Faculty / Admin?</p> -->
       <a href="/admin/search" class="faculty-btn">Faculty Dashboard</a>
     </div>
 
-
     <p id="msg"></p>
   </div>
-
-  <script>
-    const form = document.getElementById("loginForm");
-    const msg = document.getElementById("msg");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        window.location.href = "/";
-      } else {
-        msg.innerText = data.message;
-      }
-    });
-  </script>
 
 </body>
 

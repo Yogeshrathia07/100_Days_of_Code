@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Profile</title>
+  <link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2>Complete Profile</h2>
+    <p style="font-size: 14px; color: lightgray; margin-bottom: 15px;">
+      Please fill SAP ID and LeetCode ID to continue.
+    </p>
+
+    <form id="profileForm">
+      <input type="text" id="SAP_ID" placeholder="Enter SAP ID (8 digits)" maxlength="8" required>
+      <input type="text" id="leetcode_id" placeholder="Enter LeetCode Username" required>
+
+      <p id="leetcodeStatus" style="font-size: 13px; margin-top: -8px; margin-bottom: 10px;"></p>
+
+      <button type="submit">Save & Continue</button>
+    </form>
+
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("profileForm");
+    const msg = document.getElementById("msg");
+
+    const leetcodeInput = document.getElementById("leetcode_id");
+    const leetcodeStatus = document.getElementById("leetcodeStatus");
+
+    let timeout = null;
+    let isLeetcodeValid = false;
+
+    // ======================= REAL TIME LEETCODE CHECK =======================
+    leetcodeInput.addEventListener("input", () => {
+      clearTimeout(timeout);
+
+      const username = leetcodeInput.value.trim();
+
+      if (username === "") {
+        leetcodeStatus.innerText = "";
+        isLeetcodeValid = false;
+        return;
+      }
+
+      leetcodeStatus.style.color = "yellow";
+      leetcodeStatus.innerText = "Checking LeetCode username...";
+      isLeetcodeValid = false;
+
+      timeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`/leetcode/check/${username}`);
+          const data = await res.json();
+
+          if (data.valid) {
+            isLeetcodeValid = true;
+            leetcodeStatus.style.color = "lightgreen";
+            leetcodeStatus.innerText = "✅ Valid LeetCode username";
+          } else {
+            isLeetcodeValid = false;
+            leetcodeStatus.style.color = "red";
+            leetcodeStatus.innerText = "❌ Invalid LeetCode username";
+          }
+
+        } catch (error) {
+          isLeetcodeValid = false;
+          leetcodeStatus.style.color = "red";
+          leetcodeStatus.innerText = "❌ Error checking username";
+        }
+      }, 800);
+    });
+
+    // ======================= SUBMIT =======================
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const SAP_ID = document.getElementById("SAP_ID").value.trim();
+      const leetcode_id = document.getElementById("leetcode_id").value.trim();
+
+      if (!/^\d{8}$/.test(SAP_ID)) {
+        msg.style.color = "red";
+        msg.innerText = "SAP ID must be exactly 8 digits!";
+        return;
+      }
+
+      if (!isLeetcodeValid) {
+        msg.style.color = "red";
+        msg.innerText = "Please enter a valid LeetCode username!";
+        return;
+      }
+
+      msg.style.color = "yellow";
+      msg.innerText = "Saving profile...";
+
+      try {
+        const res = await fetch("/auth/complete-profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ SAP_ID, leetcode_id })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.style.color = "lightgreen";
+          msg.innerText = "Profile completed! Redirecting...";
+
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1200);
+        } else {
+          msg.style.color = "red";
+          msg.innerText = data.message || "Error saving profile!";
+        }
+
+      } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = "Server error!";
+      }
+    });
+  </script>
+
+</body>
+</html>

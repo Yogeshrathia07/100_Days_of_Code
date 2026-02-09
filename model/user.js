@@ -18,13 +18,21 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: 8,
       maxlength: 8,
+      default: null,
     },
 
-    leetcode_id: { type: String, unique: true, trim: true, default: null },
+    leetcode_id: {
+      type: String,
+      unique: true,
+      trim: true,
+      default: null,
+    },
 
-    password: { type: String },
+    password: {
+      type: String,
+      default: null,   // ✅ not required now
+    },
 
-    // ✅ NEW FIELD
     challengeProgress: [
       {
         day: { type: Number, required: true },
@@ -32,7 +40,7 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("User", userSchema);

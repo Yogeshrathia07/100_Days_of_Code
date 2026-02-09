@@ -23,11 +23,22 @@
 
         
         <div class="nav-left">
-            <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+            <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar"
+                onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
 
             <div class="nav-user-info">
-                <div id="leetcodeName" class="nav-name">LeetCode Dashboard</div>
-                <div id="leetcodeUsername" class="nav-username">@username</div>
+
+                <!-- TOP: Microsoft Name -->
+                <div class="nav-name">
+                    <%= user.name ? user.name : "Student" %>
+                </div>
+
+                <!-- BOTTOM: LeetCode Name (will update using JS) -->
+                <div class="nav-username">
+                    <span id="leetcodeDisplayName">LeetCode User</span>
+                    | @<%= user.leetcode_id ? user.leetcode_id : "not_set" %>
+                </div>
+
             </div>
         </div>
 
