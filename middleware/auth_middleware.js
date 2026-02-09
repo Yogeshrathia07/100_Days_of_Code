@@ -3,24 +3,23 @@ const User = require("../model/user");
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.redirect("/login");
+    // ✅ Microsoft session login
+    if (req.isAuthenticated && req.isAuthenticated()) {
+      return next();
     }
+
+    // ✅ JWT login
+    const token = req.cookies.token;
+    if (!token) return res.redirect("/login");
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
 
-    const user = await User.findOne({ email: decoded.email }).select("-password");
+    if (!user) return res.redirect("/login");
 
-    if (!user) {
-      return res.redirect("/login");
-    }
-
-    req.user = user; // ✅ attach user data to request
+    req.user = user;
     next();
-
-  } catch (error) {
+  } catch (err) {
     return res.redirect("/login");
   }
 };

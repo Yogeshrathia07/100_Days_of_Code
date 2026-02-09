@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
 
     SAP_ID: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       minlength: 8,
@@ -23,7 +22,7 @@ const userSchema = new mongoose.Schema(
 
     leetcode_id: { type: String, unique: true, trim: true, default: null },
 
-    password: { type: String, required: true },
+    password: { type: String },
 
     // ✅ NEW FIELD
     challengeProgress: [

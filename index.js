@@ -20,6 +20,23 @@ app.use(cookieParser());
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// ---------------------- Microsoft Authentication ----------------------
+const session = require("express-session");
+const passport = require("passport");
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+require("./config/microsoftAuth");
+
 
 
 // const {isAuthenticated}= require("./middleware/auth_middleware");
