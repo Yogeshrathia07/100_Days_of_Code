@@ -75,7 +75,7 @@
                     <p>
                         <b>LeetCode ID:</b>
                         <span id="leetcodeUsername">
-                        @<%= student.leetcode_id ? student.leetcode_id : "Not Provided" %>
+                            @<%= student.leetcode_id ? student.leetcode_id : "Not Provided" %>
                         </span>
                     </p>
 
@@ -166,7 +166,7 @@
 
                 </div>
 
-                <!-- LEETCODE SUBMISSION HEATMAP -->
+                <!-- Heatmap -->
                 <div class="leetcode_lower">
                     <div class="card heatmap-card">
 
@@ -182,16 +182,14 @@
                             </div>
                         </div>
 
+                        <!-- NEW HEATMAP STRUCTURE -->
                         <div class="heatmap-scroll">
-                            <div class="month-labels" id="monthLabels"></div>
+                            <div class="heatmap-content">
 
-                            <div class="heatmap-wrapper">
-                                <!-- <div class="ch150-days-labels">
-                                    <div>Mon</div>
-                                    <div>Wed</div>
-                                    <div>Fri</div>
-                                </div> -->
-                                <div class="heatmap" id="heatmap"></div>
+                                <div class="day-labels" id="dayLabels"></div>
+
+                                <div class="months-container" id="monthsContainer"></div>
+
                             </div>
                         </div>
 
@@ -490,6 +488,10 @@
 
 
         <% } %>
+
+            <script src="/app.js"></script>
+            <script src="/leetcode.js"></script>
+            <div class="heatmap-tooltip" id="heatmapTooltip"></div>
 
 </body>
 

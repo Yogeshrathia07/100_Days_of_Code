@@ -21,7 +21,7 @@
     <!-- Buttons -->
     <nav class="top-navbar">
 
-        
+
         <div class="nav-left">
             <img id="leetcodeAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar"
                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
@@ -48,7 +48,7 @@
             <p class="subtitle">Master Data Structures & Algorithms</p>
         </header>
         <div class="nav-right">
-             <a href="/auth/edit-profile" class="nav-link-btn">Edit Profile</a>
+            <a href="/auth/edit-profile" class="nav-link-btn">Edit Profile</a>
             <a href="/challenge" class="nav-link-btn">Challenge Questions</a>
             <a href="/auth/logout" class="nav-logout-btn">Logout</a>
         </div>
@@ -220,34 +220,16 @@
                             </div>
                         </div>
 
-                        <!-- <div class="month-labels" id="monthLabels"></div>
-
-                        <div class="heatmap-wrapper">
-                            <div class="day-labels">
-                                <div>Mon</div>
-                                <div>Wed</div>
-                                <div>Fri</div>
-                            </div>
-
-                            <div class="heatmap" id="heatmap"></div>
-                        </div> -->
-
+                        <!-- NEW HEATMAP STRUCTURE -->
                         <div class="heatmap-scroll">
+                            <div class="heatmap-content">
 
-                            <div class="month-labels" id="monthLabels"></div>
+                                <div class="day-labels" id="dayLabels"></div>
 
-                            <div class="heatmap-wrapper">
-                                <!-- <div class="day-labels">
-                                    <div>Mon</div>
-                                    <div>Wed</div>
-                                    <div>Fri</div>
-                                </div> -->
+                                <div class="months-container" id="monthsContainer"></div>
 
-                                <div class="heatmap" id="heatmap"></div>
                             </div>
-
                         </div>
-
 
                         <div class="legend">
                             <span>Less</span>
@@ -264,6 +246,7 @@
                     </div>
                 </div>
 
+
             </div>
 
         </div>
@@ -278,7 +261,7 @@
     <!-- ONE JS FILE -->
     <script src="/app.js"></script>
     <script src="/leetcode.js"></script>
-
+    <div class="heatmap-tooltip" id="heatmapTooltip"></div>
 </body>
 
 </html>

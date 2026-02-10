@@ -233,6 +233,7 @@
 .heatmap-title {
   font-size: 13px;
   color: #cbd5e1;
+  font-weight: 600;
 }
 
 .heatmap-stats {
@@ -251,6 +252,11 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 10px;
+  margin: 0 auto;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
 }
 
 .heatmap-scroll::-webkit-scrollbar {
@@ -271,52 +277,94 @@
   background: #60a5fa;
 }
 
-.month-labels {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 12px;
-  gap: 3px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  color: #8b949e;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.heatmap-wrapper {
+/* ================= NEW HEATMAP STRUCTURE ================= */
+.heatmap-content {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   width: fit-content;
-  margin: 0 auto;
 }
 
-.ch150-days-labels {
+/* ================= DAY LABELS ================= */
+.day-labels {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  gap: 3px;
+  font-size: 10px;
+  color: #8b949e;
+  padding-top: 22px;
+  min-width: 38px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 6px;
+
+  position: sticky;
+  left: 0;
+  background: #242424;
+  z-index: 10;
+}
+
+.day-labels div {
+  height: 12px;
+  line-height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Hide alternate labels */
+.day-labels div:nth-child(even) {
+  visibility: hidden;
+}
+
+/* ================= MONTHS CONTAINER ================= */
+.months-container {
+  display: flex;
+  gap: 8px;
+  width: fit-content;
+}
+
+/* ================= MONTH BLOCK ================= */
+.month-block {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #8b949e;
-  padding-top: 2px;
-  min-width: 30px;
-  flex-shrink: 0;
 }
 
-.heatmap {
+.month-header {
+  font-size: 11px;
+  color: #8b949e;
+  margin-bottom: 8px;
+  font-weight: 500;
+  min-height: 14px;
+  text-align: left;
+}
+
+/* ================= MONTH GRID ================= */
+.month-grid {
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: repeat(7, 12px);
   gap: 3px;
-  width: fit-content;
 }
 
+/* ================= DAY CELLS ================= */
 .day {
   width: 12px;
   height: 12px;
   background: #2d2d2d;
   border: none;
   border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
   flex-shrink: 0;
+}
+
+.day:hover {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 1px;
+  transform: scale(1.25);
+  z-index: 99;
+  position: relative;
+  border-radius: 3px;
 }
 
 .day.level-1 {
@@ -335,6 +383,43 @@
   background: #39d353;
 }
 
+/* ================= TOOLTIP ================= */
+.heatmap-tooltip {
+  position: fixed;
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  z-index: 999999;
+  white-space: nowrap;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.heatmap-tooltip.show {
+  opacity: 1;
+}
+
+.tooltip-date {
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+.tooltip-count {
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.tooltip-count strong {
+  color: #39d353;
+}
+
+/* ================= LEGEND ================= */
 .legend {
   display: flex;
   justify-content: flex-end;
@@ -495,7 +580,7 @@
   padding: 22px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255,  0.12);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
@@ -549,6 +634,7 @@
 
 /* ==========================================================
    100 DAYS CHALLENGE HEATMAP GRID (FIXED TOOLTIP + ALIGNMENT)
+   (NOT TOUCHED)
 ========================================================== */
 
 .challenge-heatmap-grid {
@@ -649,7 +735,7 @@
 
 /* ==========================================================
    CH150 HEATMAP (Feb 1 - 150 Days) - ORANGE THEME
-   Same spacing + same responsive like 100 Days
+   (NOT TOUCHED)
 ========================================================== */
 
 .ch150-scroll {
@@ -779,6 +865,7 @@
     height: 26px;
   }
 }
+
 .btn-row {
   display: flex;
   gap: 12px;
