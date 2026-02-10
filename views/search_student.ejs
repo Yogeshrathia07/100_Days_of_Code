@@ -30,10 +30,10 @@
     <!-- SEARCH PANEL -->
     <div class="search-panel">
         <h2>Search Student</h2>
-        <p>Enter the SAP ID to view the student's LeetCode performance.</p>
+        <p>Enter the SAP ID or email address to view the student's performance.</p>
 
         <form action="/admin/search" method="POST" class="search-form">
-            <input type="text" name="sapid" placeholder="Enter SAP ID..." required />
+            <input type="text" name="query" placeholder="Enter SAP ID or Email..." required />
             <button type="submit">Search</button>
         </form>
 
@@ -66,27 +66,33 @@
                         </span>
                     </h3>
 
-                    
+
                     <p>
                         <b>LeetCode Name:</b>
                         <span id="leetcodeDisplayName">Loading...</span>
                     </p>
-                    
+
                     <p>
                         <b>LeetCode ID:</b>
                         <span id="leetcodeUsername">
-                            @<%= student.leetcode_id ? student.leetcode_id : "Not Provided" %>
+                        @<%= student.leetcode_id ? student.leetcode_id : "Not Provided" %>
                         </span>
                     </p>
-                    
+
                     <p>
                         <b>SAP ID:</b>
                         <span>
                             <%= student.SAP_ID ? student.SAP_ID : "Not Provided" %>
                         </span>
                     </p>
+                    <p>
+                        <b>Email:</b>
+                        <span>
+                            <%= student.email ? student.email : "Not Provided" %>
+                        </span>
+                    </p>
                 </div>
-                
+
             </div>
 
 

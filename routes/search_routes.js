@@ -10,9 +10,16 @@ router.get("/search",isAdmin, (req, res) => {
 
 // Search by SAP ID
 router.post("/search", isAdmin, async (req, res) => {
-  const { sapid } = req.body;
+  const { query } = req.body;
 
-  const student = await User.findOne({ SAP_ID: sapid });
+  let student=null;
+   if (query.includes("@")) {
+      student = await User.findOne({ email: query });
+    } 
+    // else treat as SAP ID
+    else {
+      student = await User.findOne({ SAP_ID: query });
+    }
 
   if (!student) {
     return res.render("search_student", {
