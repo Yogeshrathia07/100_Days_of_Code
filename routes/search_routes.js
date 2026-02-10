@@ -4,27 +4,41 @@ const User = require("../model/user");
 const isAdmin = require("../middleware/admin_middleware");
 
 // Search page
-router.get("/search",isAdmin, (req, res) => {
-  res.render("search_student", { student: null, error: null });
+router.get("/search", isAdmin, (req, res) => {
+  res.render("search_student", {
+    student: null,
+    error: null,
+    challengeConfig: {
+      startDate: process.env.CHALLENGE_START_DATE,
+      unlockTime: process.env.CHALLENGE_UNLOCK_TIME
+    }
+  });
 });
 
 // Search by SAP ID
+// Search by SAP ID or Email
 router.post("/search", isAdmin, async (req, res) => {
   const { query } = req.body;
 
-  let student=null;
-   if (query.includes("@")) {
-      student = await User.findOne({ email: query });
-    } 
-    // else treat as SAP ID
-    else {
-      student = await User.findOne({ SAP_ID: query });
-    }
+  let student = null;
+
+  if (query.includes("@")) {
+    student = await User.findOne({ email: query });
+  } else {
+    student = await User.findOne({ SAP_ID: query });
+  }
+
+  // common config
+  const challengeConfig = {
+    startDate: process.env.CHALLENGE_START_DATE,
+    unlockTime: process.env.CHALLENGE_UNLOCK_TIME
+  };
 
   if (!student) {
     return res.render("search_student", {
       student: null,
       error: "Student not found!",
+      challengeConfig
     });
   }
 
@@ -32,11 +46,17 @@ router.post("/search", isAdmin, async (req, res) => {
     return res.render("search_student", {
       student: null,
       error: "This student has no LeetCode ID saved!",
+      challengeConfig
     });
   }
 
-  res.render("search_student", { student, error: null });
+  res.render("search_student", {
+    student,
+    error: null,
+    challengeConfig
+  });
 });
+
 
 // ✅ NEW: API to fetch challenge progress data
 router.get("/challenge-progress/:sapid", isAdmin, async (req, res) => {

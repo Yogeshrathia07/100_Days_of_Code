@@ -287,7 +287,7 @@
         <script>
             const savedLeetcodeId = "<%= student.leetcode_id %>";
         </script>
-        <script src="/leetcode.js"></script>
+        <!-- <script src="/leetcode.js"></script> -->
 
         <!-- 100 DAYS + 150 DAYS SCRIPT -->
         <script>
@@ -488,6 +488,13 @@
 
 
         <% } %>
+            <script>
+                const CONFIG = {
+                    startDate: "<%= challengeConfig.startDate %>",
+                    unlockTime: "<%= challengeConfig.unlockTime %>"
+                };
+            </script>
+
 
             <script src="/app.js"></script>
             <script src="/leetcode.js"></script>

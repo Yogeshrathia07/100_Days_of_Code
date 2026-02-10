@@ -350,6 +350,8 @@ function generateHeatmap(calendar) {
     currentDate.setUTCDate(currentDate.getUTCDate() + 1);
   }
 
+
+
   // Render month blocks
   Object.values(monthsData).forEach((monthData) => {
 
@@ -398,6 +400,55 @@ function generateHeatmap(calendar) {
     monthBlock.appendChild(monthGrid);
     monthsContainer.appendChild(monthBlock);
   });
+}
+
+
+function generate150DaysHeatmap() {
+  const heatmap = document.getElementById("ch150Heatmap");
+  const activeDaysEl = document.getElementById("ch150ActiveDays");
+  const streakEl = document.getElementById("ch150MaxStreak");
+
+  if (!heatmap) return;
+
+  heatmap.innerHTML = "";
+
+  // start date from ENV (passed through EJS)
+  const startDate = new Date(`${CONFIG.startDate}T00:00:00`);
+
+  if (isNaN(startDate.getTime())) {
+    console.error("❌ Invalid CONFIG.startDate:", CONFIG.startDate);
+    return;
+  }
+
+  let activeDays = 0;
+  let maxStreak = 0;
+  let currentStreak = 0;
+
+  for (let i = 0; i < 150; i++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + i);
+
+    const cell = document.createElement("div");
+    cell.className = "ch150-cell";
+
+    // Example: mark completed based on completedDays array (if available)
+    // If you want only LeetCode based, tell me, I will connect it.
+    if (typeof completedDays !== "undefined" && completedDays.includes(i + 1)) {
+      cell.classList.add("level-3");
+      activeDays++;
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+
+    cell.title = date.toDateString();
+
+    heatmap.appendChild(cell);
+  }
+
+  if (activeDaysEl) activeDaysEl.innerText = activeDays;
+  if (streakEl) streakEl.innerText = maxStreak;
 }
 
 
@@ -505,10 +556,13 @@ window.addEventListener("DOMContentLoaded", () => {
       savedLeetcodeId !== "undefined"
     ) {
       fetchLeetcodeData(savedLeetcodeId);
-    } else {
-      const status = document.getElementById("status");
-      if (status) status.innerText = "No LeetCode ID found!";
     }
   }
 
+  // ✅ Generate 150 Days Heatmap using CONFIG.startDate
+  if (document.getElementById("ch150Heatmap") && typeof CONFIG !== "undefined") {
+    generate150DaysHeatmap();
+  }
+
 });
+
