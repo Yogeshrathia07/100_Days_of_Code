@@ -1,8 +1,9 @@
 // ====================== CONFIG ======================
-const CONFIG = {
-  startDate: "2025-02-01",
-  unlockTime: "07:00",
-};
+// const CONFIG = {
+//   startDate: "2025-02-01",
+//   unlockTime: "07:00",
+// };
+
 
 // ====================== OPTIMIZATION ======================
 let visibleCount = 20;

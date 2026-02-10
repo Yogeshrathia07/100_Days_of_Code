@@ -66,11 +66,24 @@ app.get("/register", (req, res) => {
 // -------------------------------- Admin Routes ----------------------------
 
 app.get("/", isAuthenticated, (req, res) => {
-  res.render("index", { user: req.user });
+  res.render("index", { user: req.user,
+    challengeConfig: {
+      startDate: process.env.CHALLENGE_START_DATE,
+      unlockTime: process.env.CHALLENGE_UNLOCK_TIME
+    }
+   });
 });
+  
 app.get('/challenge', isAuthenticated, (req, res) => {
-  res.render('challenge_questions', { user: req.user });
+  res.render('challenge_questions', {
+    user: req.user,
+    challengeConfig: {
+      startDate: process.env.CHALLENGE_START_DATE,
+      unlockTime: process.env.CHALLENGE_UNLOCK_TIME
+    }
+  });
 });
+
 
 // -------------------------------- Admin Routes ----------------------------
 // app.get("/admin-login", (req, res) => {

@@ -257,6 +257,12 @@
     <script>
         const savedLeetcodeId = "<%= user.leetcode_id %>";
     </script>
+    <script>
+        const CONFIG = {
+            startDate: "<%= challengeConfig.startDate %>",
+            unlockTime: "<%= challengeConfig.unlockTime %>"
+        };
+    </script>
 
     <!-- ONE JS FILE -->
     <script src="/app.js"></script>
